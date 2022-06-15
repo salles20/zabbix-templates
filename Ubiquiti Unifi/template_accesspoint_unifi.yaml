@@ -1,0 +1,181 @@
+zabbix_export:
+  version: '6.0'
+  date: '2022-06-14T18:45:44Z'
+  groups:
+    -
+      uuid: 9c7b917aadae49d3831ba10a38ecdac3
+      name: 'Devices/Access Points'
+  templates:
+    -
+      uuid: e287ecb86ca74fd4a636078c212c12f4
+      template: 'Template - Ubiquiti Unifi'
+      name: 'Template - Ubiquiti Unifi'
+      description: |
+        Template para Access Points Ubiquiti Unifi via SNMP
+        
+        Modelo de Validacao: UAP-AC-Pro
+        
+        Por: Vinicius Goncalves
+      templates:
+        -
+          name: 'Template - Dispositivo Generico SNMP'
+      groups:
+        -
+          name: 'Devices/Access Points'
+      items:
+        -
+          uuid: cce4820f8b9946b186f9fec76253503b
+          name: 'CPU - Utilização do Processador'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.2.1.25.3.3.1.2.196608
+          key: cpuLoad.0
+          delay: 30s
+          history: 1w
+          units: '%'
+          request_method: POST
+        -
+          uuid: b849bd1286e94ad09db1f6304573851b
+          name: 'System - Versão do Firmware'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.6.3.6.0
+          key: unifiApSystemVersion.0
+          delay: 60m
+          history: 1w
+          trends: '0'
+          value_type: TEXT
+          inventory_link: SOFTWARE
+          request_method: POST
+        -
+          uuid: 11d02ddd0f83471fb797ceadcb08146a
+          name: 'System - Endereço MAC'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.6.2.1.1.4.1
+          key: unifiIfMac.1
+          delay: 30m
+          history: 1w
+          trends: '0'
+          value_type: TEXT
+          inventory_link: MACADDRESS_A
+          request_method: POST
+        -
+          uuid: 410044d6f29b4500900ce11f32b98db9
+          name: 'Network - LAN: Tráfego de Entrada'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.6.2.1.1.6.1
+          key: unifiIfRxBytes.1
+          history: 1w
+          units: bps
+          preprocessing:
+            -
+              type: CHANGE_PER_SECOND
+              parameters:
+                - ''
+          request_method: POST
+        -
+          uuid: cd0fbea7156b45a28b5f354881c90b02
+          name: 'Network - Interface Speed'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.6.2.1.1.11.1
+          key: unifiIfSpeed.1
+          delay: 15m
+          history: 1w
+          units: bps
+          request_method: POST
+        -
+          uuid: 37fccf2b6b244d078496b550ce983705
+          name: 'Network - LAN: Tráfego de Saída'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.6.2.1.1.12.1
+          key: unifiIfTxBytes.1
+          history: 1w
+          units: Bps
+          preprocessing:
+            -
+              type: CHANGE_PER_SECOND
+              parameters:
+                - ''
+          request_method: POST
+        -
+          uuid: 23ccca542f9e4d98a0ebf5f1585ad9da
+          name: 'Network - Utilização do Canal 2G (BGN)'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.6.1.1.1.6.1
+          key: unifiRadioCuTotal.1
+          history: 1w
+          units: '%'
+          request_method: POST
+          triggers:
+            -
+              uuid: 08092aa8d33b4329bef75bd295dd9abc
+              expression: 'avg(/Template - Ubiquiti Unifi/unifiRadioCuTotal.1,300s)=80'
+              name: 'A utilização do Canal 2G está no nível alto.'
+              priority: WARNING
+            -
+              uuid: 3890ca71d4f7459eb857a3114cc1f49f
+              expression: 'avg(/Template - Ubiquiti Unifi/unifiRadioCuTotal.1,300s)=90'
+              name: 'A utilização do Canal 2G está no nível crítico.'
+              priority: AVERAGE
+        -
+          uuid: 568f9c14e3fa4bd2970c0cd7ebd24270
+          name: 'Network - Utilização do Canal 5G (AC)'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.6.1.1.1.6.2
+          key: unifiRadioCuTotal.2
+          history: 1w
+          units: '%'
+          request_method: POST
+          triggers:
+            -
+              uuid: 4aeff639a027452da5f25add9be5a3c0
+              expression: 'avg(/Template - Ubiquiti Unifi/unifiRadioCuTotal.2,300s)=80'
+              name: 'A utilização do Canal 5G está no nível alto.'
+              priority: WARNING
+            -
+              uuid: 84670855670b4755b375690b65228db7
+              expression: 'avg(/Template - Ubiquiti Unifi/unifiRadioCuTotal.2,300s)=90'
+              name: 'A utilização do Canal 5G está no nível crítico.'
+              priority: AVERAGE
+      tags:
+        -
+          tag: Tag
+          value: 'Ubiquiti Unifi'
+      macros:
+        -
+          macro: '{$SNMP_PORT}'
+          value: '161'
+  graphs:
+    -
+      uuid: 58dbe668191e4ac790b9a7b2c219c365
+      name: 'Network - LAN: Tráfego da Interface'
+      show_work_period: 'NO'
+      show_triggers: 'NO'
+      type: STACKED
+      graph_items:
+        -
+          color: 1A7C11
+          item:
+            host: 'Template - Ubiquiti Unifi'
+            key: unifiIfRxBytes.1
+        -
+          sortorder: '1'
+          color: F63100
+          item:
+            host: 'Template - Ubiquiti Unifi'
+            key: unifiIfTxBytes.1
+    -
+      uuid: cabb2c0c674f43f9ad4856465668573c
+      name: 'Network - Utilização dos Canais (5G+2G)'
+      ymin_type_1: FIXED
+      ymax_type_1: FIXED
+      graph_items:
+        -
+          color: F63100
+          item:
+            host: 'Template - Ubiquiti Unifi'
+            key: unifiRadioCuTotal.2
+        -
+          sortorder: '1'
+          color: 1A7C11
+          item:
+            host: 'Template - Ubiquiti Unifi'
+            key: unifiRadioCuTotal.1

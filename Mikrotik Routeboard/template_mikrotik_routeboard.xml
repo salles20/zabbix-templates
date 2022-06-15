@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>6.0</version>
+    <date>2022-06-14T18:44:44Z</date>
+    <groups>
+        <group>
+            <uuid>4963efcb679142b493710cbd2ba890fc</uuid>
+            <name>Devices/Mikrotiks</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <uuid>b104de315a1b424ea36dae00f16b6fd2</uuid>
+            <template>Template - Mikrotik Routeboard</template>
+            <name>Template - Mikrotik Routeboard</name>
+            <description>Template para Mikrotik Routeboards via SNMP
+
+Modelo de Validacao: RouterOS RB750
+
+Por: Vinicius Goncalves</description>
+            <templates>
+                <template>
+                    <name>Template - Dispositivo Generico SNMP</name>
+                </template>
+            </templates>
+            <groups>
+                <group>
+                    <name>Devices/Mikrotiks</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>acc548b526d74f449341fea2a2eb9495</uuid>
+                    <name>System - Versão do Firmware</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.14988.1.1.7.4.0</snmp_oid>
+                    <key>system.hw.firmware</key>
+                    <delay>1h</delay>
+                    <history>2w</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>1d</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <uuid>6b244bc23fee4c73938dce2f4971cd23</uuid>
+                            <expression>last(/Template - Mikrotik Routeboard/system.hw.firmware,#1)&lt;&gt;last(/Template - Mikrotik Routeboard/system.hw.firmware,#2) and length(last(/Template - Mikrotik Routeboard/system.hw.firmware))&gt;0</expression>
+                            <name>O firmware do equipamento foi alterado.</name>
+                            <opdata>Current value: {ITEM.LASTVALUE1}</opdata>
+                            <priority>INFO</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>d4388c7825d2428e944b350015d8d601</uuid>
+                    <name>System - Modelo do Equipamento</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.2.1.1.1.0</snmp_oid>
+                    <key>system.hw.model</key>
+                    <delay>1h</delay>
+                    <history>2w</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>MODEL</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>1d</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <uuid>ab1a110fe49548cfa4accefa7797e03b</uuid>
+                    <name>System - Serial Number do Equipamento</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.14988.1.1.7.3.0</snmp_oid>
+                    <key>system.hw.serialnumber</key>
+                    <delay>1h</delay>
+                    <history>2w</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>SERIALNO_A</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>1d</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <uuid>db1047aabf2548a787f79439d48f088d</uuid>
+                            <expression>last(/Template - Mikrotik Routeboard/system.hw.serialnumber,#1)&lt;&gt;last(/Template - Mikrotik Routeboard/system.hw.serialnumber,#2) and length(last(/Template - Mikrotik Routeboard/system.hw.serialnumber))&gt;0</expression>
+                            <name>O serial number do equipamento foi alterado.</name>
+                            <priority>INFO</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>455973bc21af4a0ca5c7d65b83d85da4</uuid>
+                    <name>System - Sistema Operacional</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.14988.1.1.4.4.0</snmp_oid>
+                    <key>system.sw.os[mtxrLicVersion.0]</key>
+                    <delay>1h</delay>
+                    <history>2w</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>OS</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>1d</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <uuid>7941e23b398848ff963e0a111f76558b</uuid>
+                            <expression>last(/Template - Mikrotik Routeboard/system.sw.os[mtxrLicVersion.0],#1)&lt;&gt;last(/Template - Mikrotik Routeboard/system.sw.os[mtxrLicVersion.0],#2) and length(last(/Template - Mikrotik Routeboard/system.sw.os[mtxrLicVersion.0]))&gt;0</expression>
+                            <name>O sistema operacional do equipamento foi alterado.</name>
+                            <priority>INFO</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>cf74e8ebdbd04a4f9083910ccf77e617</uuid>
+                    <name>RAM - Memória Total</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.2.1.25.2.3.1.5.65536</snmp_oid>
+                    <key>vm.memory.total[hrStorageSize.Memory]</key>
+                    <history>7d</history>
+                    <units>B</units>
+                    <preprocessing>
+                        <step>
+                            <type>MULTIPLIER</type>
+                            <parameters>
+                                <parameter>1024</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <uuid>67665e12bde64353a27cc914dc0c0f98</uuid>
+                    <name>RAM - Memória Utilizada</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.2.1.25.2.3.1.6.65536</snmp_oid>
+                    <key>vm.memory.used[hrStorageUsed.Memory]</key>
+                    <history>7d</history>
+                    <units>B</units>
+                    <preprocessing>
+                        <step>
+                            <type>MULTIPLIER</type>
+                            <parameters>
+                                <parameter>1024</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <uuid>146b77ba5e5b4415b27c5bbbef9d5b84</uuid>
+                    <name>RAM - Memória Utilizada (%)</name>
+                    <type>CALCULATED</type>
+                    <key>vm.memory.util[memoryUsedPercentage.Memory]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <params>last(//vm.memory.used[hrStorageUsed.Memory])/last(//vm.memory.total[hrStorageSize.Memory])*100</params>
+                    <triggers>
+                        <trigger>
+                            <uuid>e6539c6b3d7741759a99691dbe7e9552</uuid>
+                            <expression>min(/Template - Mikrotik Routeboard/vm.memory.util[memoryUsedPercentage.Memory],5m)&gt;{$MEMORY.UTIL.MAX}</expression>
+                            <name>Alta utilização de memória (&gt;{$MEMORY.UTIL.MAX}%)</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <uuid>a514611f721644e1a6b3bdbaf73fd2c8</uuid>
+                    <name>Descoberta do Processador</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.2.1.25.3.3.1.1]</snmp_oid>
+                    <key>hrProcessorLoad.discovery</key>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>3b7e736ffab345c08e44133f7d43e859</uuid>
+                            <name>CPU - #{#SNMPINDEX} - Utilização da CPU</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.25.3.3.1.2.{#SNMPINDEX}</snmp_oid>
+                            <key>system.cpu.util[hrProcessorLoad.{#SNMPINDEX}]</key>
+                            <history>1w</history>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>c23cc08d84bc4f76b891a7a3d8176549</uuid>
+                                    <expression>last(/Template - Mikrotik Routeboard/system.cpu.util[hrProcessorLoad.{#SNMPINDEX}])&gt;{$CPU.UTIL.CRIT}</expression>
+                                    <name>#{#SNMPINDEX}: Alta utilização da CPU (&gt;{$CPU.UTIL.CRIT}%)</name>
+                                    <opdata>Current utilization: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>WARNING</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>de1ab2ccfa634f7e9241c34f07b482c9</uuid>
+                            <name>CPU - #{#SNMPINDEX} - Alta Utilização da CPU</name>
+                            <graph_items>
+                                <graph_item>
+                                    <color>199C0D</color>
+                                    <item>
+                                        <host>Template - Mikrotik Routeboard</host>
+                                        <key>system.cpu.util[hrProcessorLoad.{#SNMPINDEX}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>21546810b35f44be912517109e589f71</uuid>
+                    <name>Descoberta de Temperatura de CPU</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.4.1.14988.1.1.3.11]</snmp_oid>
+                    <key>mtxrHlProcessorTemperature.discovery</key>
+                    <delay>1h</delay>
+                    <description>MIKROTIK-MIB::mtxrHlProcessorTemperature
+Since temperature of CPU is not available on all Mikrotik hardware, this is done to avoid unsupported items.</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>1f615f3c27614bd29de4b9e509e0ec57</uuid>
+                            <name>CPU: -Temperatura da CPU</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.14988.1.1.3.11.{#SNMPINDEX}</snmp_oid>
+                            <key>sensor.temp.value[mtxrHlProcessorTemperature.{#SNMPINDEX}]</key>
+                            <delay>3m</delay>
+                            <value_type>FLOAT</value_type>
+                            <units>°C</units>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>0.1</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>7931c8a98a184195a582509a5d0f8319</uuid>
+                                    <expression>avg(/Template - Mikrotik Routeboard/sensor.temp.value[mtxrHlProcessorTemperature.{#SNMPINDEX}],5m)&gt;{$TEMP_CRIT_CPU}</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>max(/Template - Mikrotik Routeboard/sensor.temp.value[mtxrHlProcessorTemperature.{#SNMPINDEX}],5m)&lt;{$TEMP_CRIT_CPU}-3</recovery_expression>
+                                    <name>CPU -  Temperatura está acima do nível crítico (&gt;{$TEMP_CRIT_CPU}ºC)</name>
+                                    <opdata>Current value: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>0b116d7f4f1f4947ac2297595dac3085</uuid>
+                                    <expression>avg(/Template - Mikrotik Routeboard/sensor.temp.value[mtxrHlProcessorTemperature.{#SNMPINDEX}],5m)&gt;{$TEMP_WARN_CPU}</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>max(/Template - Mikrotik Routeboard/sensor.temp.value[mtxrHlProcessorTemperature.{#SNMPINDEX}],5m)&lt;{$TEMP_WARN_CPU}-3</recovery_expression>
+                                    <name>CPU - Temperatura está acima do nível de alerta (&gt;{$TEMP_WARN_CPU}ºC)</name>
+                                    <opdata>Current value: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>WARNING</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>CPU -  Temperatura está acima do nível crítico (&gt;{$TEMP_CRIT_CPU}ºC)</name>
+                                            <expression>avg(/Template - Mikrotik Routeboard/sensor.temp.value[mtxrHlProcessorTemperature.{#SNMPINDEX}],5m)&gt;{$TEMP_CRIT_CPU}</expression>
+                                            <recovery_expression>max(/Template - Mikrotik Routeboard/sensor.temp.value[mtxrHlProcessorTemperature.{#SNMPINDEX}],5m)&lt;{$TEMP_CRIT_CPU}-3</recovery_expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>1911130254dc4c25895391148544cbf0</uuid>
+                    <name>Descoberta de Temperatura do Dispositivo</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.4.1.14988.1.1.3.10]</snmp_oid>
+                    <key>mtxrHlTemperature.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>4b9e8945715c49c2a31883ac3e605432</uuid>
+                            <name>Status - Temperatura do Dispositivo</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.14988.1.1.3.10.{#SNMPINDEX}</snmp_oid>
+                            <key>sensor.temp.value[mtxrHlTemperature.{#SNMPINDEX}]</key>
+                            <delay>3m</delay>
+                            <history>2w</history>
+                            <value_type>FLOAT</value_type>
+                            <units>°C</units>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>0.1</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>e67a7dd119674a73b48005b66ffc112c</uuid>
+                                    <expression>avg(/Template - Mikrotik Routeboard/sensor.temp.value[mtxrHlTemperature.{#SNMPINDEX}],5m)&gt;{$TEMP_CRIT_DEVICE}</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>max(/Template - Mikrotik Routeboard/sensor.temp.value[mtxrHlTemperature.{#SNMPINDEX}],5m)&lt;{$TEMP_CRIT_DEVICE}-3</recovery_expression>
+                                    <name>Status -  Temperatura está acima do nível crítico (&gt;{$TEMP_CRIT_DEVICE}ºC)</name>
+                                    <opdata>Current value: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>f3c5341c547948239acbaedde8bb2fb6</uuid>
+                                    <expression>avg(/Template - Mikrotik Routeboard/sensor.temp.value[mtxrHlTemperature.{#SNMPINDEX}],5m)&gt;{$TEMP_WARN_DEVICE}</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>max(/Template - Mikrotik Routeboard/sensor.temp.value[mtxrHlTemperature.{#SNMPINDEX}],5m)&lt;{$TEMP_WARN_DEVICE}-3</recovery_expression>
+                                    <name>Status -  Temperatura está acima do nível de alerta (&gt;{$TEMP_WARN_DEVICE}ºC)</name>
+                                    <opdata>Current value: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>WARNING</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Status -  Temperatura está acima do nível crítico (&gt;{$TEMP_CRIT_DEVICE}ºC)</name>
+                                            <expression>avg(/Template - Mikrotik Routeboard/sensor.temp.value[mtxrHlTemperature.{#SNMPINDEX}],5m)&gt;{$TEMP_CRIT_DEVICE}</expression>
+                                            <recovery_expression>max(/Template - Mikrotik Routeboard/sensor.temp.value[mtxrHlTemperature.{#SNMPINDEX}],5m)&lt;{$TEMP_CRIT_DEVICE}-3</recovery_expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>0b166fb5961b4de2bc5ad54b723c4f8b</uuid>
+                    <name>Descoberta de Interface de Rede</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#IFOPERSTATUS},1.3.6.1.2.1.2.2.1.8,{#IFADMINSTATUS},1.3.6.1.2.1.2.2.1.7,{#IFALIAS},1.3.6.1.2.1.31.1.1.1.18,{#IFNAME},1.3.6.1.2.1.31.1.1.1.1,{#IFDESCR},1.3.6.1.2.1.2.2.1.2,{#IFTYPE},1.3.6.1.2.1.2.2.1.3]</snmp_oid>
+                    <key>net.if.discovery</key>
+                    <delay>1h</delay>
+                    <filter>
+                        <evaltype>AND</evaltype>
+                        <conditions>
+                            <condition>
+                                <macro>{#IFADMINSTATUS}</macro>
+                                <value>{$NET.IF.IFADMINSTATUS.MATCHES}</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFADMINSTATUS}</macro>
+                                <value>{$NET.IF.IFADMINSTATUS.NOT_MATCHES}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>B</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFOPERSTATUS}</macro>
+                                <value>{$NET.IF.IFOPERSTATUS.MATCHES}</value>
+                                <formulaid>I</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFOPERSTATUS}</macro>
+                                <value>{$NET.IF.IFOPERSTATUS.NOT_MATCHES}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>J</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFNAME}</macro>
+                                <value>{$NET.IF.IFNAME.MATCHES}</value>
+                                <formulaid>G</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFNAME}</macro>
+                                <value>{$NET.IF.IFNAME.NOT_MATCHES}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>H</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFDESCR}</macro>
+                                <value>{$NET.IF.IFDESCR.MATCHES}</value>
+                                <formulaid>E</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFDESCR}</macro>
+                                <value>{$NET.IF.IFDESCR.NOT_MATCHES}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>F</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFALIAS}</macro>
+                                <value>{$NET.IF.IFALIAS.MATCHES}</value>
+                                <formulaid>C</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFALIAS}</macro>
+                                <value>{$NET.IF.IFALIAS.NOT_MATCHES}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>D</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFTYPE}</macro>
+                                <value>{$NET.IF.IFTYPE.MATCHES}</value>
+                                <formulaid>K</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFTYPE}</macro>
+                                <value>{$NET.IF.IFTYPE.NOT_MATCHES}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>L</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>4473b01163d24afa8a542ada9e7a0120</uuid>
+                            <name>Network - Interface {#IFNAME}({#IFALIAS}): Tráfego de Entrada</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.31.1.1.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>net.if.in[ifHCInOctets.{#SNMPINDEX}]</key>
+                            <delay>3m</delay>
+                            <history>7d</history>
+                            <units>bps</units>
+                            <preprocessing>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <parameters>
+                                        <parameter/>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>8</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>00c7ed271eaa43da945e555edd2a1fbb</uuid>
+                            <name>Network - Interface {#IFNAME}({#IFALIAS}): Tráfego de Saída</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.31.1.1.1.10.{#SNMPINDEX}</snmp_oid>
+                            <key>net.if.out[ifHCOutOctets.{#SNMPINDEX}]</key>
+                            <delay>3m</delay>
+                            <history>7d</history>
+                            <units>bps</units>
+                            <preprocessing>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <parameters>
+                                        <parameter/>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>8</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>d04776201a5248808201041b96fe4c96</uuid>
+                            <name>Network - Interface {#IFNAME}({#IFALIAS}): Speed</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.31.1.1.1.15.{#SNMPINDEX}</snmp_oid>
+                            <key>net.if.speed[ifHighSpeed.{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <units>bps</units>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>1000000</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>3cfd5b87d3bb405cb1da3bf808914d8c</uuid>
+                            <name>Network - Interface {#IFNAME}({#IFALIAS}): Status Operacional</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.2.2.1.8.{#SNMPINDEX}</snmp_oid>
+                            <key>net.if.status[ifOperStatus.{#SNMPINDEX}]</key>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>SNMP::OperStatus</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>07ea7adc758c485aac9192afde4d0db6</uuid>
+                                    <expression>{$IFCONTROL}=1 and last(/Template - Mikrotik Routeboard/net.if.status[ifOperStatus.{#SNMPINDEX}])=2 and (last(/Template - Mikrotik Routeboard/net.if.status[ifOperStatus.{#SNMPINDEX}],#1)&lt;&gt;last(/Template - Mikrotik Routeboard/net.if.status[ifOperStatus.{#SNMPINDEX}],#2))</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>last(/Template - Mikrotik Routeboard/net.if.status[ifOperStatus.{#SNMPINDEX}])&lt;&gt;2 or {$IFCONTROL}=0</recovery_expression>
+                                    <name>Interface {#IFNAME}({#IFALIAS}): Link Down</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <uuid>67440c1d57d2484c8d8db5b628e99376</uuid>
+                            <expression>(avg(/Template - Mikrotik Routeboard/net.if.in[ifHCInOctets.{#SNMPINDEX}],15m)&gt;({$IF.UTIL.MAX}/100)*last(/Template - Mikrotik Routeboard/net.if.speed[ifHighSpeed.{#SNMPINDEX}]) or
+avg(/Template - Mikrotik Routeboard/net.if.out[ifHCOutOctets.{#SNMPINDEX}],15m)&gt;({$IF.UTIL.MAX}/100)*last(/Template - Mikrotik Routeboard/net.if.speed[ifHighSpeed.{#SNMPINDEX}])) and
+last(/Template - Mikrotik Routeboard/net.if.speed[ifHighSpeed.{#SNMPINDEX}])&gt;0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>avg(/Template - Mikrotik Routeboard/net.if.in[ifHCInOctets.{#SNMPINDEX}],15m)&lt;(({$IF.UTIL.MAX}-3)/100)*last(/Template - Mikrotik Routeboard/net.if.speed[ifHighSpeed.{#SNMPINDEX}]) and
+avg(/Template - Mikrotik Routeboard/net.if.out[ifHCOutOctets.{#SNMPINDEX}],15m)&lt;(({$IF.UTIL.MAX}-3)/100)*last(/Template - Mikrotik Routeboard/net.if.speed[ifHighSpeed.{#SNMPINDEX}])</recovery_expression>
+                            <name>Interface {#IFNAME}({#IFALIAS}): Alta utilização de banda (&gt;{$IF.UTIL.MAX}%)</name>
+                            <opdata>In: {ITEM.LASTVALUE1}, out: {ITEM.LASTVALUE3}, speed: {ITEM.LASTVALUE2}</opdata>
+                            <priority>WARNING</priority>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>5f42e56000334055aa96b136072cdba1</uuid>
+                            <name>Network - Interface {#IFNAME}({#IFALIAS}): Tráfego de Rede</name>
+                            <graph_items>
+                                <graph_item>
+                                    <color>1A7C11</color>
+                                    <item>
+                                        <host>Template - Mikrotik Routeboard</host>
+                                        <key>net.if.in[ifHCInOctets.{#SNMPINDEX}]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>2774A4</color>
+                                    <item>
+                                        <host>Template - Mikrotik Routeboard</host>
+                                        <key>net.if.out[ifHCOutOctets.{#SNMPINDEX}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>f3226fa9664a44db9217d90e8842ac75</uuid>
+                    <name>Descoberta de Storage</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#FSNAME},1.3.6.1.2.1.25.2.3.1.3,{#ALLOC_UNITS},1.3.6.1.2.1.25.2.3.1.4,{#STORAGE_TYPE},1.3.6.1.2.1.25.2.3.1.2]</snmp_oid>
+                    <key>storage.discovery</key>
+                    <delay>1h</delay>
+                    <filter>
+                        <evaltype>OR</evaltype>
+                        <conditions>
+                            <condition>
+                                <macro>{#STORAGE_TYPE}</macro>
+                                <value>.+4$</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#STORAGE_TYPE}</macro>
+                                <value>.+hrStorageFixedDisk</value>
+                                <formulaid>B</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>6f500373c01449d0bcd329467853d5f3</uuid>
+                            <name>Disk - {#SNMPINDEX}: Volume Utilizado (%)</name>
+                            <type>CALCULATED</type>
+                            <key>vfs.fs.pused[hrStorageSize.{#SNMPINDEX}]</key>
+                            <history>7d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <params>(last(//vfs.fs.used[hrStorageSize.{#SNMPINDEX}])/last(//vfs.fs.total[hrStorageSize.{#SNMPINDEX}]))*100</params>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>f92d59f19c0e406b91cdd2d083f05ba7</uuid>
+                            <name>Disk - {#SNMPINDEX}: Volume Total</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}</snmp_oid>
+                            <key>vfs.fs.total[hrStorageSize.{#SNMPINDEX}]</key>
+                            <history>7d</history>
+                            <units>B</units>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>1024</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>7ef5bf827a2047b68caafacf2071acd2</uuid>
+                            <name>Disk - {#SNMPINDEX}: Volume Utilizado</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>vfs.fs.used[hrStorageSize.{#SNMPINDEX}]</key>
+                            <history>7d</history>
+                            <units>B</units>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>1024</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <uuid>c7d47976c099444285525cedd83f736a</uuid>
+                            <expression>last(/Template - Mikrotik Routeboard/vfs.fs.pused[hrStorageSize.{#SNMPINDEX}])&gt;{$VFS.FS.PUSED.MAX.WARN} and
+((last(/Template - Mikrotik Routeboard/vfs.fs.total[hrStorageSize.{#SNMPINDEX}])-last(/Template - Mikrotik Routeboard/vfs.fs.used[hrStorageSize.{#SNMPINDEX}]))&lt;10G or timeleft(/Template - Mikrotik Routeboard/vfs.fs.pused[hrStorageSize.{#SNMPINDEX}],1h,100)&lt;1d)</expression>
+                            <name>Disk - {#SNMPINDEX}: Espaço em disco está baixo.</name>
+                            <opdata>Space used: {ITEM.LASTVALUE3} of {ITEM.LASTVALUE2} ({ITEM.LASTVALUE1})</opdata>
+                            <priority>WARNING</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>Disk - {#SNMPINDEX}: Volume disponível está abaixo do nível de crítico.</name>
+                                    <expression>last(/Template - Mikrotik Routeboard/vfs.fs.pused[hrStorageSize.{#SNMPINDEX}])&gt;{$VFS.FS.PUSED.MAX.CRIT} and
+((last(/Template - Mikrotik Routeboard/vfs.fs.total[hrStorageSize.{#SNMPINDEX}])-last(/Template - Mikrotik Routeboard/vfs.fs.used[hrStorageSize.{#SNMPINDEX}]))&lt;5G or timeleft(/Template - Mikrotik Routeboard/vfs.fs.pused[hrStorageSize.{#SNMPINDEX}],1h,100)&lt;1d)</expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <uuid>5737436d2fb649959655c6f344e2afc4</uuid>
+                            <expression>last(/Template - Mikrotik Routeboard/vfs.fs.pused[hrStorageSize.{#SNMPINDEX}])&gt;{$VFS.FS.PUSED.MAX.CRIT} and
+((last(/Template - Mikrotik Routeboard/vfs.fs.total[hrStorageSize.{#SNMPINDEX}])-last(/Template - Mikrotik Routeboard/vfs.fs.used[hrStorageSize.{#SNMPINDEX}]))&lt;5G or timeleft(/Template - Mikrotik Routeboard/vfs.fs.pused[hrStorageSize.{#SNMPINDEX}],1h,100)&lt;1d)</expression>
+                            <name>Disk - {#SNMPINDEX}: Volume disponível está abaixo do nível de crítico.</name>
+                            <opdata>Space used: {ITEM.LASTVALUE3} of {ITEM.LASTVALUE2} ({ITEM.LASTVALUE1})</opdata>
+                            <priority>AVERAGE</priority>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>57148de175024b11b1fc26c35e865de1</uuid>
+                            <name>Disk - {#SNMPINDEX}: Volume Utilizado</name>
+                            <width>600</width>
+                            <height>340</height>
+                            <show_work_period>NO</show_work_period>
+                            <show_triggers>NO</show_triggers>
+                            <graph_items>
+                                <graph_item>
+                                    <color>2774A4</color>
+                                    <item>
+                                        <host>Template - Mikrotik Routeboard</host>
+                                        <key>vfs.fs.pused[hrStorageSize.{#SNMPINDEX}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <tags>
+                <tag>
+                    <tag>Tag</tag>
+                    <value>Mikrotik</value>
+                </tag>
+            </tags>
+            <macros>
+                <macro>
+                    <macro>{$CPU.UTIL.CRIT}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$ICMP_LOSS_WARN}</macro>
+                    <value>20</value>
+                </macro>
+                <macro>
+                    <macro>{$ICMP_RESPONSE_TIME_WARN}</macro>
+                    <value>0.15</value>
+                </macro>
+                <macro>
+                    <macro>{$IF.UTIL.MAX}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$IFCONTROL}</macro>
+                    <value>1</value>
+                </macro>
+                <macro>
+                    <macro>{$MEMORY.UTIL.MAX}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$SNMP.TIMEOUT}</macro>
+                    <value>5m</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_CRIT_CPU}</macro>
+                    <value>75</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_CRIT_DEVICE}</macro>
+                    <value>50</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_WARN_CPU}</macro>
+                    <value>70</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_WARN_DEVICE}</macro>
+                    <value>45</value>
+                </macro>
+                <macro>
+                    <macro>{$VFS.FS.PUSED.MAX.CRIT}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$VFS.FS.PUSED.MAX.WARN}</macro>
+                    <value>80</value>
+                </macro>
+            </macros>
+            <valuemaps>
+                <valuemap>
+                    <uuid>9df5d2c7016940cf8927a9b741629173</uuid>
+                    <name>SNMP::HostAvailable</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>NotAvailable</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Available</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>15ab6fd4e96e4597a35cdf6354f4e753</uuid>
+                    <name>SNMP::OperStatus</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Up</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Down</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>Dormant</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>NotPresent</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>LowerLayerDown</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>15ebff63dec6437f9d3984ac17e02050</uuid>
+                    <name>SNMP::ServiceState</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>Down</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Up</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+            </valuemaps>
+        </template>
+    </templates>
+    <graphs>
+        <graph>
+            <uuid>69e35e4fc19f4bed81d6ff751355574e</uuid>
+            <name>RAM - Memória Utilizada</name>
+            <ymin_type_1>FIXED</ymin_type_1>
+            <ymax_type_1>FIXED</ymax_type_1>
+            <graph_items>
+                <graph_item>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>Template - Mikrotik Routeboard</host>
+                        <key>vm.memory.util[memoryUsedPercentage.Memory]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+    </graphs>
+</zabbix_export>

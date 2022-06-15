@@ -1,0 +1,1140 @@
+zabbix_export:
+  version: '6.0'
+  date: '2022-06-14T18:47:08Z'
+  groups:
+    -
+      uuid: c98489015d8b4e1ab94360f407ef4e6d
+      name: Devices/Hosts
+    -
+      uuid: 8f0bf726783149ef9638d627f4972f08
+      name: 'Devices/Maquinas Virtuais'
+    -
+      uuid: 51f7af57e37040348c094e7e47328237
+      name: Devices/VMware
+  templates:
+    -
+      uuid: 5899b2f0aced4085b5ac25d0461b3425
+      template: 'Template - VMware Hypervisor'
+      name: 'Template - VMware Hypervisor'
+      description: |
+        Template para Hypervisors em ambiente VMware ESXi via API do vCenter
+        
+        Modelo de Validacao: vCenter 6.5
+        
+        Por: Vinicius Goncalves
+      groups:
+        -
+          name: Devices/Hosts
+      items:
+        -
+          uuid: 3010cb082f23478b858912f944347530
+          name: 'Ping - Acessibilidade do Host'
+          type: SIMPLE
+          key: icmpping
+          history: 7d
+          valuemap:
+            name: 'SNMP::ServiceState'
+          triggers:
+            -
+              uuid: ab84a61566a5402db59efd40d20714a5
+              expression: 'last(/Template - VMware Hypervisor/icmpping)=0'
+              name: 'Hypervisor não está respondendo'
+              priority: AVERAGE
+              manual_close: 'YES'
+        -
+          uuid: 44fdd9e599db4019bc530bd5eefaac36
+          name: 'Ping - Perda de Pacotes (%)'
+          type: SIMPLE
+          key: icmppingloss
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+        -
+          uuid: 57f89d1d2d2e4906a31177e996371b91
+          name: 'Ping - Latência'
+          type: SIMPLE
+          key: icmppingsec
+          history: 7d
+          value_type: FLOAT
+          units: s
+        -
+          uuid: af4d0877fda84753816c817ad76162f1
+          name: 'System - Nome do Cluster'
+          type: SIMPLE
+          key: 'vmware.hv.cluster.name[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+        -
+          uuid: c4ebd62118464e7a8d1945f80d70f8ae
+          name: 'CPU - Utilização do Processador (%)'
+          type: SIMPLE
+          key: 'vmware.hv.cpu.usage.perf[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: 1bff6fbd300d4455a787a273d957bba3
+          name: 'CPU - Utilização do Processador'
+          type: SIMPLE
+          key: 'vmware.hv.cpu.usage[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          history: 7d
+          units: Hz
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: e4d27d7f9b9048d4ae6c60cbdd6c0091
+          name: 'System - Nome do Datacenter'
+          type: SIMPLE
+          key: 'vmware.hv.datacenter.name[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+        -
+          uuid: 5c29837f75f04d7f9a5786691b3dd991
+          name: 'System - Nome do Equipamento'
+          type: SIMPLE
+          key: 'vmware.hv.fullname[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+        -
+          uuid: ad0053d57b834e6a9776c08e1c455d55
+          name: 'CPU - Velocidade dos Cores'
+          type: SIMPLE
+          key: 'vmware.hv.hw.cpu.freq[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          history: 7d
+          units: Hz
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: 3f0c35fcef9e4699ac5a1c51d80f8da4
+          name: 'CPU - Modelo'
+          type: SIMPLE
+          key: 'vmware.hv.hw.cpu.model[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: c99a5bf2e3904f97b3d361ca20af7883
+          name: 'CPU - Número de Cores'
+          type: SIMPLE
+          key: 'vmware.hv.hw.cpu.num[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          history: 7d
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+        -
+          uuid: ce89c38e6e5d4338a30ee150be1b2b67
+          name: 'RAM - Memória Total'
+          type: SIMPLE
+          key: 'vmware.hv.hw.memory[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          history: 7d
+          units: B
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: 7ed7ac26da384bcda976badf24ebbec1
+          name: 'System - Modelo de Equipamento'
+          type: SIMPLE
+          key: 'vmware.hv.hw.model[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: 6c4aab55b3e640779a25ac90b9ca2a43
+          name: 'System - BIOS UUID'
+          type: SIMPLE
+          key: 'vmware.hv.hw.uuid[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: aec06090d16d4bdd8ed3494b448f19d8
+          name: 'System - Vendor do Hardware'
+          type: SIMPLE
+          key: 'vmware.hv.hw.vendor[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: 93d680d6886d446badbbe995ddd9ba9c
+          name: 'RAM - Memória Utilizada'
+          type: SIMPLE
+          key: 'vmware.hv.memory.used[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          history: 7d
+          units: B
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: 33f78ab6ee6c4e7585a83a60cdecab6f
+          name: 'Network - Tráfedo de Entrada'
+          type: SIMPLE
+          key: 'vmware.hv.network.in[{$VMWARE.URL},{$VMWARE.HV.UUID},bps]'
+          history: 7d
+          units: bps
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: b013afcba08b47f4a5b590a59f464a58
+          name: 'Network - Tráfedo de Saída'
+          type: SIMPLE
+          key: 'vmware.hv.network.out[{$VMWARE.URL},{$VMWARE.HV.UUID},bps]'
+          history: 7d
+          units: Bps
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: e4116d7c7e234c5ebd5784f42ade1f2e
+          name: 'PSU - Potência Máxima'
+          type: SIMPLE
+          key: 'vmware.hv.power[{$VMWARE.URL},{$VMWARE.HV.UUID},max]'
+          history: 7d
+          units: '!W'
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 6h
+        -
+          uuid: 179a981cf30f4f77869e3b50dc2bc333
+          name: 'PSU - Potência Utilizada'
+          type: SIMPLE
+          key: 'vmware.hv.power[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          history: 7d
+          units: '!W'
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          description: 'Current power usage.'
+        -
+          uuid: 3c9d6ffb53624758ad888bf70f69218c
+          name: 'Status - Sensores'
+          type: SIMPLE
+          key: 'vmware.hv.sensors.get[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          history: '0'
+          trends: '0'
+          value_type: TEXT
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: 0cec294521314c5482233b5b96e90c8d
+          name: 'Status - Overall'
+          type: SIMPLE
+          key: 'vmware.hv.status[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          history: 7d
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          description: |
+            Gray: Unknown
+            Green: OK
+            Yellow: It might have a problem
+            Red: It has a problem
+          valuemap:
+            name: 'VMWARE::Status'
+          triggers:
+            -
+              uuid: 378511e0f1794874a68aef1b43561ee5
+              expression: 'last(/Template - VMware Hypervisor/vmware.hv.status[{$VMWARE.URL},{$VMWARE.HV.UUID}])=3'
+              name: 'HealthCheck - {$VMWARE.HV.NAME}: Red'
+              priority: HIGH
+            -
+              uuid: ef6ca4d7033c4c8cb963eb7d493b3c7b
+              expression: 'last(/Template - VMware Hypervisor/vmware.hv.status[{$VMWARE.URL},{$VMWARE.HV.UUID}])=2'
+              name: 'HealthCheck - {$VMWARE.HV.NAME}: Yellow'
+              priority: AVERAGE
+              dependencies:
+                -
+                  name: 'HealthCheck - {$VMWARE.HV.NAME}: Red'
+                  expression: 'last(/Template - VMware Hypervisor/vmware.hv.status[{$VMWARE.URL},{$VMWARE.HV.UUID}])=3'
+        -
+          uuid: ecad96137494476293b57a0440de3f65
+          name: 'System - Uptime'
+          type: SIMPLE
+          key: 'vmware.hv.uptime[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          history: 7d
+          units: uptime
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          triggers:
+            -
+              uuid: 01d316b0a8cf4998b344f0c4ef1daa32
+              expression: 'last(/Template - VMware Hypervisor/vmware.hv.uptime[{$VMWARE.URL},{$VMWARE.HV.UUID}])<10m'
+              name: 'Hypervisor foi reiniciado'
+              priority: WARNING
+              manual_close: 'YES'
+        -
+          uuid: 222ad20887cf479b8e81a4c338078d17
+          name: 'System - Versão do Dispositivo'
+          type: SIMPLE
+          key: 'vmware.hv.version[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: 2045df572e864834bd4bd97046353f4e
+          name: 'System - Número de VMs'
+          type: SIMPLE
+          key: 'vmware.hv.vm.num[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          history: 7d
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+      discovery_rules:
+        -
+          uuid: fb7774df87994355baff7402d9fabcc2
+          name: 'Descoberta de Datastore'
+          type: SIMPLE
+          key: 'vmware.hv.datastore.discovery[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          delay: 1h
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          item_prototypes:
+            -
+              uuid: 65e6c165c3674953b2845d4101a9a6bf
+              name: 'Datastore - {#DATASTORE}: Número de Datastore Paths'
+              type: SIMPLE
+              key: 'vmware.hv.datastore.multipath[{$VMWARE.URL},{$VMWARE.HV.UUID},{#DATASTORE}]'
+              history: 7d
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+              trigger_prototypes:
+                -
+                  uuid: 8f1de4827ba446ef902ca5fa44109c6d
+                  expression: 'last(/Template - VMware Hypervisor/vmware.hv.datastore.multipath[{$VMWARE.URL},{$VMWARE.HV.UUID},{#DATASTORE}],#1)<>last(/Template - VMware Hypervisor/vmware.hv.datastore.multipath[{$VMWARE.URL},{$VMWARE.HV.UUID},{#DATASTORE}],#2) and last(/Template - VMware Hypervisor/vmware.hv.datastore.multipath[{$VMWARE.URL},{$VMWARE.HV.UUID},{#DATASTORE}])<{#MULTIPATH.COUNT}'
+                  name: 'O número de Datastore Paths foi alterado.'
+                  opdata: 'Current: {ITEM.LASTVALUE}, Registered: {#MULTIPATH.COUNT}'
+                  priority: AVERAGE
+                  manual_close: 'YES'
+            -
+              uuid: 259d1ff4bde143248f7ee2f7f880cb62
+              name: 'Datastore - {#DATASTORE}: Latência de Leitura do Datastore'
+              type: SIMPLE
+              key: 'vmware.hv.datastore.read[{$VMWARE.URL},{$VMWARE.HV.UUID},{#DATASTORE},latency]'
+              history: 7d
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+            -
+              uuid: f36245398cc4460a9cb4ec741612693b
+              name: 'Datastore - {#DATASTORE}: Volume Disponível (%)'
+              type: SIMPLE
+              key: 'vmware.hv.datastore.size[{$VMWARE.URL},{$VMWARE.HV.UUID},{#DATASTORE},pfree]'
+              delay: 5m
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+            -
+              uuid: cc83e8f5ec08483db75482706bf01aba
+              name: 'Datastore - {#DATASTORE}: Volume Total'
+              type: SIMPLE
+              key: 'vmware.hv.datastore.size[{$VMWARE.URL},{$VMWARE.HV.UUID},{#DATASTORE}]'
+              delay: 5m
+              history: 7d
+              units: B
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+            -
+              uuid: 9db980d8f5f44af5ad11a5949d80031d
+              name: 'Datastore - {#DATASTORE}: Latência de Escrita do Datastore'
+              type: SIMPLE
+              key: 'vmware.hv.datastore.write[{$VMWARE.URL},{$VMWARE.HV.UUID},{#DATASTORE},latency]'
+              history: 7d
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: deb31adf69634837839e2d8f87167f28
+          name: 'Descoberta de Health Check'
+          type: DEPENDENT
+          key: vmware.hv.healthcheck.discovery
+          delay: '0'
+          item_prototypes:
+            -
+              uuid: fabb7524dd454daa942266e5565ce40e
+              name: 'Status: Health State Rollup'
+              type: DEPENDENT
+              key: 'vmware.hv.sensor.health.state[{#SINGLETON}]'
+              delay: '0'
+              history: 7d
+              trends: '0'
+              value_type: CHAR
+              description: |
+                Gray: Unknown
+                Green: OK
+                Yellow: It might heave a problem
+                Red: It has a problem
+              preprocessing:
+                -
+                  type: JSONPATH
+                  parameters:
+                    - '$..HostNumericSensorInfo[?(@.name=="VMware Rollup Health State")].healthState.label.first()'
+              master_item:
+                key: 'vmware.hv.sensors.get[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+              trigger_prototypes:
+                -
+                  uuid: 9f2a65161946436986aacf6c9a637673
+                  expression: 'last(/Template - VMware Hypervisor/vmware.hv.sensor.health.state[{#SINGLETON}])="Red"'
+                  name: 'HealthCheck - {$VMWARE.HV.NAME}: Red'
+                  priority: HIGH
+                  dependencies:
+                    -
+                      name: 'HealthCheck - {$VMWARE.HV.NAME}: Red'
+                      expression: 'last(/Template - VMware Hypervisor/vmware.hv.status[{$VMWARE.URL},{$VMWARE.HV.UUID}])=3'
+                -
+                  uuid: dc4f84eb8d2143bb80999fbc58f38928
+                  expression: 'last(/Template - VMware Hypervisor/vmware.hv.sensor.health.state[{#SINGLETON}])="Yellow"'
+                  name: 'HealthCheck - {$VMWARE.HV.NAME}: Yellow'
+                  priority: AVERAGE
+                  dependencies:
+                    -
+                      name: 'HealthCheck - {$VMWARE.HV.NAME}: Red'
+                      expression: 'last(/Template - VMware Hypervisor/vmware.hv.sensor.health.state[{#SINGLETON}])="Red"'
+                    -
+                      name: 'HealthCheck - {$VMWARE.HV.NAME}: Red'
+                      expression: 'last(/Template - VMware Hypervisor/vmware.hv.status[{$VMWARE.URL},{$VMWARE.HV.UUID}])=3'
+                    -
+                      name: 'HealthCheck - {$VMWARE.HV.NAME}: Yellow'
+                      expression: 'last(/Template - VMware Hypervisor/vmware.hv.status[{$VMWARE.URL},{$VMWARE.HV.UUID}])=2'
+          master_item:
+            key: 'vmware.hv.sensors.get[{$VMWARE.URL},{$VMWARE.HV.UUID}]'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$..HostNumericSensorInfo[?(@.name=="VMware Rollup Health State")]'
+              error_handler: CUSTOM_VALUE
+              error_handler_params: '[]'
+            -
+              type: JAVASCRIPT
+              parameters:
+                - 'return JSON.stringify(value != "[]" ? [{''{#SINGLETON}'': ''''}] : []);'
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 6h
+      macros:
+        -
+          macro: '{$VMWARE.PASSWORD}'
+        -
+          macro: '{$VMWARE.URL}'
+        -
+          macro: '{$VMWARE.USERNAME}'
+      valuemaps:
+        -
+          uuid: 25d04e2838af4fcca9ddd21df6781497
+          name: 'SNMP::ServiceState'
+          mappings:
+            -
+              value: '0'
+              newvalue: Down
+            -
+              value: '1'
+              newvalue: Up
+        -
+          uuid: 2b324fd8d7624874a3a81449b62c2cd6
+          name: 'VMWARE::Status'
+          mappings:
+            -
+              value: '0'
+              newvalue: Gray
+            -
+              value: '1'
+              newvalue: Green
+            -
+              value: '2'
+              newvalue: Yellow
+            -
+              value: '3'
+              newvalue: Red
+    -
+      uuid: 88a9a25df0f34d7e86de55ea12e8fa8c
+      template: 'Template - VMware vCenter'
+      name: 'Template - VMware vCenter'
+      description: |
+        Template para VMware vCenter via API
+        
+        Modelo de Validacao: vCenter 6.5
+        
+        Por: Vinicius Goncalves
+      groups:
+        -
+          name: Devices/VMware
+      items:
+        -
+          uuid: 20d890b845734da0ba8db2627121ccc1
+          name: 'System - Event Logs'
+          type: SIMPLE
+          key: 'vmware.eventlog[{$VMWARE.URL},skip]'
+          history: 7d
+          trends: '0'
+          value_type: LOG
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: f379ee630b2847c88f98a9913052ded6
+          name: 'System - Nome Completo'
+          type: SIMPLE
+          key: 'vmware.fullname[{$VMWARE.URL}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+        -
+          uuid: 4859b9fc55e24426af23f57145031f04
+          name: 'System - Versão do VMware'
+          type: SIMPLE
+          key: 'vmware.version[{$VMWARE.URL}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+      discovery_rules:
+        -
+          uuid: d40188d7b83646b887f85303d8e4c710
+          name: 'Descoberta de VMware Clusters'
+          type: SIMPLE
+          key: 'vmware.cluster.discovery[{$VMWARE.URL}]'
+          delay: 1h
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          item_prototypes:
+            -
+              uuid: 0621beb423c142f3bf68b3e3cc622a6a
+              name: 'Cluster - {#CLUSTER.NAME}: Status'
+              type: SIMPLE
+              key: 'vmware.cluster.status[{$VMWARE.URL},{#CLUSTER.NAME}]'
+              history: 7d
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+              valuemap:
+                name: 'VMWARE::Status'
+        -
+          uuid: 360f74d976ae4a408afb0f053cfeb3b6
+          name: 'Descoberta de Datastore'
+          type: SIMPLE
+          key: 'vmware.datastore.discovery[{$VMWARE.URL}]'
+          delay: 1h
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          item_prototypes:
+            -
+              uuid: a687abd453c1482fac61c992ab7b4ce8
+              name: 'Datastore - {#DATASTORE}: Latência de Leitura do Datastore'
+              type: SIMPLE
+              key: 'vmware.datastore.read[{$VMWARE.URL},{#DATASTORE},latency]'
+              history: 7d
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+            -
+              uuid: c23f0b6c30084adeacfa7835ede2c79f
+              name: 'Datastore - {#DATASTORE}: Volume Disponível (%)'
+              type: SIMPLE
+              key: 'vmware.datastore.size[{$VMWARE.URL},{#DATASTORE},pfree]'
+              delay: 5m
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+            -
+              uuid: 369f6e9cc4f647dfaecf023a9d271de5
+              name: 'Datastore - {#DATASTORE}: Volume Total'
+              type: SIMPLE
+              key: 'vmware.datastore.size[{$VMWARE.URL},{#DATASTORE}]'
+              delay: 5m
+              history: 7d
+              units: B
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+            -
+              uuid: 961b4301690c4aa39a068bdcc927b579
+              name: 'Datastore - {#DATASTORE}: Latência de Escrita do Datastore'
+              type: SIMPLE
+              key: 'vmware.datastore.write[{$VMWARE.URL},{#DATASTORE},latency]'
+              history: 7d
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: 4d238b6c2aa94ed7beaa0fbd34f3b7b9
+          name: 'Descoberta de Hypervisors'
+          type: SIMPLE
+          key: 'vmware.hv.discovery[{$VMWARE.URL}]'
+          delay: 1h
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          host_prototypes:
+            -
+              uuid: ce8645b4caf246539d7ac1410badd175
+              host: 'ESXi-{#HV.NAME}'
+              name: 'ESXi-{#HV.NAME}'
+              group_links:
+                -
+                  group:
+                    name: Devices/VMware
+              group_prototypes:
+                -
+                  name: '{#CLUSTER.NAME}'
+                -
+                  name: '{#DATACENTER.NAME}'
+              templates:
+                -
+                  name: 'Template - VMware Hypervisor'
+              macros:
+                -
+                  macro: '{$VMWARE.HV.NAME}'
+                  value: '{#HV.NAME}'
+                  description: 'Name of Hypervisor.'
+                -
+                  macro: '{$VMWARE.HV.UUID}'
+                  value: '{#HV.UUID}'
+                  description: 'UUID of Hypervisor.'
+              tags:
+                -
+                  tag: Tag
+                  value: ESXi
+                -
+                  tag: Tipo
+                  value: VMware
+              custom_interfaces: 'YES'
+              interfaces:
+                -
+                  ip: '{#HV.IP}'
+        -
+          uuid: 63603d3ddb2c43c694b7ed018387dd22
+          name: 'Descoberta de Máquinas Virtuais'
+          type: SIMPLE
+          key: 'vmware.vm.discovery[{$VMWARE.URL}]'
+          delay: 1h
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          host_prototypes:
+            -
+              uuid: f8b33bbbb2964585869600087baafea7
+              host: 'VM-{#VM.NAME}'
+              name: 'VM-{#VM.NAME}'
+              group_links:
+                -
+                  group:
+                    name: 'Devices/Maquinas Virtuais'
+              group_prototypes:
+                -
+                  name: '{#CLUSTER.NAME} (vm)'
+                -
+                  name: '{#DATACENTER.NAME}/{#VM.FOLDER} (vm)'
+                -
+                  name: '{#HV.NAME}'
+              templates:
+                -
+                  name: 'Template - VMware VM'
+              macros:
+                -
+                  macro: '{$VMWARE.VM.UUID}'
+                  value: '{#VM.UUID}'
+                  description: 'UUID of guest virtual machine.'
+              tags:
+                -
+                  tag: Tag
+                  value: 'Virtual Machine'
+              custom_interfaces: 'YES'
+              interfaces:
+                -
+                  ip: '{#VM.IP}'
+      macros:
+        -
+          macro: '{$VMWARE.PASSWORD}'
+          description: 'VMware service {$USERNAME} user password'
+        -
+          macro: '{$VMWARE.URL}'
+          description: 'VMware service (vCenter or ESX hypervisor) SDK URL (https://servername/sdk)'
+        -
+          macro: '{$VMWARE.USERNAME}'
+          description: 'VMware service user name'
+      valuemaps:
+        -
+          uuid: deeab520c6984de0a8b6f552ad0cc523
+          name: 'VMWARE::Status'
+          mappings:
+            -
+              value: '0'
+              newvalue: Gray
+            -
+              value: '1'
+              newvalue: Green
+            -
+              value: '2'
+              newvalue: Yellow
+            -
+              value: '3'
+              newvalue: Red
+    -
+      uuid: 83a4db09d41f482cba66c1dd3655f04d
+      template: 'Template - VMware VM'
+      name: 'Template - VMware VM'
+      description: |
+        Template para VMs em ambiente VMware via API do vCenter
+        
+        Modelo de Validacao: vCenter 6.5
+        
+        Por: Vinicius Goncalves
+      groups:
+        -
+          name: 'Devices/Maquinas Virtuais'
+      items:
+        -
+          uuid: e68cda4b8dfc4316a79bc27a51c5b68f
+          name: 'System - Nome do Cluster'
+          type: SIMPLE
+          key: 'vmware.vm.cluster.name[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+        -
+          uuid: 62ddafd1a8d943c38d1e8cdf51fe4f49
+          name: 'CPU - Latêncica do Processador (%)'
+          type: SIMPLE
+          key: 'vmware.vm.cpu.latency[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: c03d77e42e904828b66fe3fccd71c0ed
+          name: 'CPU - Número de vCPUs'
+          type: SIMPLE
+          key: 'vmware.vm.cpu.num[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          delay: 1h
+          history: 7d
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+        -
+          uuid: e0f0af572b554b2c896b61466116e587
+          name: 'CPU - Ready'
+          type: SIMPLE
+          key: 'vmware.vm.cpu.ready[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          history: 7d
+          units: ms
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          description: 'Time that the virtual machine was ready, but could not get scheduled to run on the physical CPU during last measurement interval (VMware vCenter/ESXi Server performance counter sampling interval - 20 seconds)'
+        -
+          uuid: db06429c71d4471c8319538b4ec1e58e
+          name: 'CPU - Utilização do Processador (%)'
+          type: SIMPLE
+          key: 'vmware.vm.cpu.usage.perf[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          history: 7d
+          units: '%'
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          triggers:
+            -
+              uuid: 10eb1007d4254390b6bf4bcd21d3235b
+              expression: 'last(/Template - VMware VM/vmware.vm.cpu.usage.perf[{$VMWARE.URL},{$VMWARE.VM.UUID}])>{$CPU_UTIL_CRIT}'
+              name: 'Alta Utilização da CPU (>{$CPU_UTIL_CRIT}%)'
+              opdata: 'Valor Atual: {ITEM.LASTVALUE1}'
+              priority: AVERAGE
+            -
+              uuid: 4d738805171443e7a2b157d0adcda697
+              expression: 'last(/Template - VMware VM/vmware.vm.cpu.usage.perf[{$VMWARE.URL},{$VMWARE.VM.UUID}])>{$CPU_UTIL_WARN}'
+              name: 'Alta Utilização da CPU (>{$CPU_UTIL_WARN}%)'
+              opdata: 'Valor Atual: {ITEM.LASTVALUE1}'
+              priority: WARNING
+              dependencies:
+                -
+                  name: 'Alta Utilização da CPU (>{$CPU_UTIL_CRIT}%)'
+                  expression: 'last(/Template - VMware VM/vmware.vm.cpu.usage.perf[{$VMWARE.URL},{$VMWARE.VM.UUID}])>{$CPU_UTIL_CRIT}'
+        -
+          uuid: acbce2a309974dcf9c50123640ead37b
+          name: 'CPU - Utilização do Processador'
+          type: SIMPLE
+          key: 'vmware.vm.cpu.usage[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          history: 7d
+          units: Hz
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: f9b2c83f1d1f4b70b05df87fdfc6458f
+          name: 'System - Nome do Datacenter'
+          type: SIMPLE
+          key: 'vmware.vm.datacenter.name[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+        -
+          uuid: 70fe08a301f243d085712056d85f272f
+          name: 'RAM - Memória Swap'
+          type: SIMPLE
+          key: 'vmware.vm.guest.memory.size.swapped[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          history: 7d
+          units: B
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: 03d359856b324fe98edf10d267b1d593
+          name: 'System - Uptime OS'
+          type: SIMPLE
+          key: 'vmware.vm.guest.osuptime[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          history: 7d
+          units: uptime
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          triggers:
+            -
+              uuid: f8e13e23d58a4ba2ad69ae1b5d10afa4
+              expression: 'last(/Template - VMware VM/vmware.vm.guest.osuptime[{$VMWARE.URL},{$VMWARE.VM.UUID}])<5m'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/Template - VMware VM/vmware.vm.guest.osuptime[{$VMWARE.URL},{$VMWARE.VM.UUID}])>30m'
+              name: 'System - VMware: A VM foi reiniciada.'
+              priority: WARNING
+              manual_close: 'YES'
+        -
+          uuid: 9b35452927674384a19e4d9e22ea4d68
+          name: 'System - Nome do Hypervisor'
+          type: SIMPLE
+          key: 'vmware.vm.hv.name[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          delay: 1h
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+        -
+          uuid: 8320835f21b74c3db48908c9923875a6
+          name: 'RAM - Memória Utilizada'
+          type: SIMPLE
+          key: 'vmware.vm.memory.size.usage.guest[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          history: 7d
+          units: B
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: 64529d09e23f417f9f23da23069adb3e
+          name: 'RAM - Memória Total'
+          type: SIMPLE
+          key: 'vmware.vm.memory.size[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          delay: 1h
+          history: 7d
+          units: B
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+        -
+          uuid: 43d8ab752f924a129b2181c1f7a4be06
+          name: 'System - Power State'
+          type: SIMPLE
+          key: 'vmware.vm.powerstate[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          history: 7d
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          valuemap:
+            name: 'VMWARE::VMPowerState'
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1h
+        -
+          uuid: 72f554b7ca8e4980801e8609550161e6
+          name: 'System - Uptime'
+          type: SIMPLE
+          key: 'vmware.vm.uptime[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          history: 7d
+          units: uptime
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+      discovery_rules:
+        -
+          uuid: 848288ee6a594044b8298e95fe05f5ab
+          name: 'Descoberta de Dispositivo de Rede'
+          type: SIMPLE
+          key: 'vmware.vm.net.if.discovery[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          delay: 1h
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          item_prototypes:
+            -
+              uuid: eed5b7f23d674175a9789718c577cc11
+              name: 'Network - Interface ({#IFDESC}): Tráfego de Entrada'
+              type: SIMPLE
+              key: 'vmware.vm.net.if.in[{$VMWARE.URL},{$VMWARE.VM.UUID},{#IFNAME},bps]'
+              history: 7d
+              units: bps
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+            -
+              uuid: 2922ecd657494757a4696500294e3df6
+              name: 'Network - Interface ({#IFDESC}): Tráfego de Saída'
+              type: SIMPLE
+              key: 'vmware.vm.net.if.out[{$VMWARE.URL},{$VMWARE.VM.UUID},{#IFNAME},bps]'
+              history: 7d
+              units: bps
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+            -
+              uuid: 91f47d20f9474b7ea7823467eba06f97
+              name: 'Network - Interface ({#IFDESC}): Rede Utilizada'
+              type: SIMPLE
+              key: 'vmware.vm.net.if.usage[{$VMWARE.URL},{$VMWARE.VM.UUID},{#IFNAME}]'
+              history: 7d
+              units: bps
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '1024'
+        -
+          uuid: 145696d05aa1480d9214041f27c2041f
+          name: 'Descoberta de Dispositivo de Disco'
+          type: SIMPLE
+          key: 'vmware.vm.vfs.dev.discovery[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          delay: 1h
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          item_prototypes:
+            -
+              uuid: ecd62d62527d4e72a85b7901dd3b2d03
+              name: 'Disk - {#DISKDESC}:  Latência de Leitura do Disco'
+              type: SIMPLE
+              key: 'vmware.vm.storage.totalreadlatency[{$VMWARE.URL},{$VMWARE.VM.UUID},{#DISKNAME}]'
+              history: 7d
+              units: '!ms'
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+            -
+              uuid: 14183b8d6175405a85d32a53a242a8e3
+              name: 'Disk - {#DISKDESC}:  Latência de Escrita do Disco'
+              type: SIMPLE
+              key: 'vmware.vm.storage.totalwritelatency[{$VMWARE.URL},{$VMWARE.VM.UUID},{#DISKNAME}]'
+              history: 7d
+              units: '!ms'
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+            -
+              uuid: b7fc1c1dc51a4e2ebb2653c1dead83cf
+              name: 'Disk - {#DISKDESC}:  Média de Leitura do Disco'
+              type: SIMPLE
+              key: 'vmware.vm.vfs.dev.read[{$VMWARE.URL},{$VMWARE.VM.UUID},{#DISKNAME},bps]'
+              history: 7d
+              units: bps
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+            -
+              uuid: 6ae5ee76cc434d598c3c9ac10d7fd0b8
+              name: 'Disk - {#DISKDESC}:  Média de Escrita do Disco'
+              type: SIMPLE
+              key: 'vmware.vm.vfs.dev.write[{$VMWARE.URL},{$VMWARE.VM.UUID},{#DISKNAME},bps]'
+              history: 7d
+              units: Bps
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+        -
+          uuid: 235481e34a6445a196f3ebc1ffe6aec5
+          name: 'Descoberta de Filesystem Montados'
+          type: SIMPLE
+          key: 'vmware.vm.vfs.fs.discovery[{$VMWARE.URL},{$VMWARE.VM.UUID}]'
+          delay: 1h
+          username: '{$VMWARE.USERNAME}'
+          password: '{$VMWARE.PASSWORD}'
+          item_prototypes:
+            -
+              uuid: 1b0e57b311e645df8992c5f8d78a996f
+              name: 'Disk - {#FSNAME}: Volume Disponível'
+              type: SIMPLE
+              key: 'vmware.vm.vfs.fs.size[{$VMWARE.URL},{$VMWARE.VM.UUID},{#FSNAME},free]'
+              history: 7d
+              units: B
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+            -
+              uuid: 417c16e9a7034436919602b1e621be56
+              name: 'Disk - {#FSNAME}: Volume Disponível (%)'
+              type: SIMPLE
+              key: 'vmware.vm.vfs.fs.size[{$VMWARE.URL},{$VMWARE.VM.UUID},{#FSNAME},pfree]'
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+              trigger_prototypes:
+                -
+                  uuid: 2e843f2f84d14c8ca6b8b034a2951b99
+                  expression: 'last(/Template - VMware VM/vmware.vm.vfs.fs.size[{$VMWARE.URL},{$VMWARE.VM.UUID},{#FSNAME},pfree])<{$VOLUME_DISP_WARN}'
+                  name: '{#FSNAME}: Volume disponível está baixo (<{$VOLUME_DISP_WARN}%)'
+                  priority: WARNING
+                -
+                  uuid: 890c3a303e514fd98a5f9da57ae49b7a
+                  expression: 'last(/Template - VMware VM/vmware.vm.vfs.fs.size[{$VMWARE.URL},{$VMWARE.VM.UUID},{#FSNAME},pfree])<{$VOLUME_DISP_CRIT}'
+                  name: '{#FSNAME}: Volume Disponível está muito baixo (<{$VOLUME_DISP_CRIT}%)'
+                  priority: AVERAGE
+            -
+              uuid: 8b0aad25b1a04028a0570191cb5e3041
+              name: 'Disk - {#FSNAME}: Volume Total'
+              type: SIMPLE
+              key: 'vmware.vm.vfs.fs.size[{$VMWARE.URL},{$VMWARE.VM.UUID},{#FSNAME},total]'
+              delay: 1h
+              history: 7d
+              units: B
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+              preprocessing:
+                -
+                  type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+            -
+              uuid: 91c1b0e3dc8843a4b4b196b5e8d43b98
+              name: 'Disk - {#FSNAME}: Volume Utilizado'
+              type: SIMPLE
+              key: 'vmware.vm.vfs.fs.size[{$VMWARE.URL},{$VMWARE.VM.UUID},{#FSNAME},used]'
+              history: 7d
+              units: B
+              username: '{$VMWARE.USERNAME}'
+              password: '{$VMWARE.PASSWORD}'
+      macros:
+        -
+          macro: '{$CPU_UTIL_CRIT}'
+          value: '90'
+        -
+          macro: '{$CPU_UTIL_WARN}'
+          value: '80'
+        -
+          macro: '{$MEMORY_UTIL_CRIT}'
+          value: '90'
+        -
+          macro: '{$MEMORY_UTIL_WARN}'
+          value: '80'
+        -
+          macro: '{$VMWARE.PASSWORD}'
+        -
+          macro: '{$VMWARE.URL}'
+        -
+          macro: '{$VMWARE.USERNAME}'
+        -
+          macro: '{$VOLUME_DISP_CRIT}'
+          value: '5'
+        -
+          macro: '{$VOLUME_DISP_WARN}'
+          value: '10'
+      valuemaps:
+        -
+          uuid: b32596b5f53b4fb192c59786ef2d424c
+          name: 'VMWARE::VMPowerState'
+          mappings:
+            -
+              value: '0'
+              newvalue: PoweredOff
+            -
+              value: '1'
+              newvalue: PoweredOn
+            -
+              value: '2'
+              newvalue: Suspended
+  triggers:
+    -
+      uuid: af0e0b05ed2e4cc4a4170811d0e96500
+      expression: '(100*(last(/Template - VMware VM/vmware.vm.memory.size.usage.guest[{$VMWARE.URL},{$VMWARE.VM.UUID}]))/(last(/Template - VMware VM/vmware.vm.memory.size[{$VMWARE.URL},{$VMWARE.VM.UUID}])))>{$MEMORY_UTIL_CRIT}'
+      name: 'Alta Utilização de Memória (>{$MEMORY_UTIL_CRIT}%)'
+      opdata: 'Valor Atual: {ITEM.LASTVALUE1}'
+      priority: AVERAGE
+    -
+      uuid: b1f01656b460417bb81dda8da004426a
+      expression: '(100*(last(/Template - VMware VM/vmware.vm.memory.size.usage.guest[{$VMWARE.URL},{$VMWARE.VM.UUID}]))/(last(/Template - VMware VM/vmware.vm.memory.size[{$VMWARE.URL},{$VMWARE.VM.UUID}])))>{$MEMORY_UTIL_WARN}'
+      name: 'Alta Utilização de Memória (>{$MEMORY_UTIL_WARN}%)'
+      opdata: 'Valor Atual: {ITEM.LASTVALUE1}'
+      priority: WARNING

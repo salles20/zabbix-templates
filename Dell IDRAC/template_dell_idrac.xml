@@ -1,0 +1,1372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>6.0</version>
+    <date>2022-06-14T18:42:32Z</date>
+    <groups>
+        <group>
+            <uuid>b4c89977ca774eb59158ab663b496692</uuid>
+            <name>Devices</name>
+        </group>
+        <group>
+            <uuid>c98489015d8b4e1ab94360f407ef4e6d</uuid>
+            <name>Devices/Hosts</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <uuid>af0136a64bdc4773a582a59807ea01de</uuid>
+            <template>Template - Dell iDRAC</template>
+            <name>Template - Dell iDRAC</name>
+            <description>Template para iDRAC de Servidores Físicos Dell via SNMP
+
+Modelo de Validacao: Dell PowerEdge R540
+
+Por: Vinicius Goncalves</description>
+            <templates>
+                <template>
+                    <name>Template - Dispositivo Generico SNMP</name>
+                </template>
+            </templates>
+            <groups>
+                <group>
+                    <name>Devices</name>
+                </group>
+                <group>
+                    <name>Devices/Hosts</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>e32bd6585f1d41f2916b0228e5bf5189</uuid>
+                    <name>System - Versão do Firmware</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.1.1.8.0</snmp_oid>
+                    <key>system.hw.firmware</key>
+                    <delay>1h</delay>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>1d</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <uuid>7a30c8f8b551482fa48d16028215cab2</uuid>
+                            <expression>last(/Template - Dell iDRAC/system.hw.firmware,#1)&lt;&gt;last(/Template - Dell iDRAC/system.hw.firmware,#2) and length(last(/Template - Dell iDRAC/system.hw.firmware))&gt;0</expression>
+                            <name>O firmware do equipamento foi alterado.</name>
+                            <opdata>Current value: {ITEM.LASTVALUE1}</opdata>
+                            <priority>INFO</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>5f7387dc3afb44229c05573ad21c93b6</uuid>
+                    <name>System - Modelo do Equipamento</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.1.3.12.0</snmp_oid>
+                    <key>system.hw.model</key>
+                    <delay>1h</delay>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>MODEL</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>1d</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <uuid>bff7e4b5c5c54965a6fc10202b70a826</uuid>
+                    <name>System - Serial Number do Equipamento</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.1.3.2.0</snmp_oid>
+                    <key>system.hw.serialnumber</key>
+                    <delay>1h</delay>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>SERIALNO_A</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>1d</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <uuid>1d33274e617e4085b380da9fa784e85a</uuid>
+                            <expression>last(/Template - Dell iDRAC/system.hw.serialnumber,#1)&lt;&gt;last(/Template - Dell iDRAC/system.hw.serialnumber,#2) and length(last(/Template - Dell iDRAC/system.hw.serialnumber))&gt;0</expression>
+                            <name>O dispositivo foi substituído.</name>
+                            <priority>INFO</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>8a91dee9092f42d8b7efe22826910fee</uuid>
+                    <name>Status - Saúde do Sistema</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.2.1.0</snmp_oid>
+                    <key>system.status[globalSystemStatus.0]</key>
+                    <history>2w</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>IDRAC::ObjectStatus</name>
+                    </valuemap>
+                    <triggers>
+                        <trigger>
+                            <uuid>8040eb05ad6d4535b3321cfdc2b2b7d8</uuid>
+                            <expression>count(/Template - Dell iDRAC/system.status[globalSystemStatus.0],#1,&quot;eq&quot;,&quot;{$HEALTH_CRIT_STATUS}&quot;)=1</expression>
+                            <name>O sistema está em estado crítico.</name>
+                            <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                            <priority>HIGH</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>O sistema está em estado de desastre.</name>
+                                    <expression>count(/Template - Dell iDRAC/system.status[globalSystemStatus.0],#1,&quot;eq&quot;,&quot;{$HEALTH_DISASTER_STATUS}&quot;)=1</expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger>
+                        <trigger>
+                            <uuid>336f2fb5950846cc851302dcc803645d</uuid>
+                            <expression>count(/Template - Dell iDRAC/system.status[globalSystemStatus.0],#1,&quot;eq&quot;,&quot;{$HEALTH_WARN_STATUS}&quot;)=1</expression>
+                            <name>O sistema está em estado de alerta.</name>
+                            <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                            <priority>WARNING</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>O sistema está em estado crítico.</name>
+                                    <expression>count(/Template - Dell iDRAC/system.status[globalSystemStatus.0],#1,&quot;eq&quot;,&quot;{$HEALTH_CRIT_STATUS}&quot;)=1</expression>
+                                </dependency>
+                                <dependency>
+                                    <name>O sistema está em estado de desastre.</name>
+                                    <expression>count(/Template - Dell iDRAC/system.status[globalSystemStatus.0],#1,&quot;eq&quot;,&quot;{$HEALTH_DISASTER_STATUS}&quot;)=1</expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger>
+                        <trigger>
+                            <uuid>d492eccf991a45d9bb5086e1be5e0e57</uuid>
+                            <expression>count(/Template - Dell iDRAC/system.status[globalSystemStatus.0],#1,&quot;eq&quot;,&quot;{$HEALTH_DISASTER_STATUS}&quot;)=1</expression>
+                            <name>O sistema está em estado de desastre.</name>
+                            <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                            <priority>DISASTER</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>b53ceb833ea54910a0ee0a0f8d59b18a</uuid>
+                    <name>System - Sistema Operacional</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.1.3.6.0</snmp_oid>
+                    <key>system.sw.os[systemOSName]</key>
+                    <delay>1h</delay>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>OS</inventory_link>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>1d</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <uuid>b534c357c10142d8af35db01dbce7e0f</uuid>
+                            <expression>last(/Template - Dell iDRAC/system.sw.os[systemOSName],#1)&lt;&gt;last(/Template - Dell iDRAC/system.sw.os[systemOSName],#2) and length(last(/Template - Dell iDRAC/system.sw.os[systemOSName]))&gt;0</expression>
+                            <name>O sistema operacional do equipamento foi alterado.</name>
+                            <priority>INFO</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <uuid>56f1be3f51724dde8888b668806621cb</uuid>
+                    <name>Descoberta de Bateria de Controladora RAID</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#BATTERY_NUM},1.3.6.1.4.1.674.10892.5.5.1.20.130.15.1.1]</snmp_oid>
+                    <key>array.cache.discovery</key>
+                    <delay>1h</delay>
+                    <lifetime>1w</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>08617fa667db4adaada177a1f17e4b35</uuid>
+                            <name>Bateria - Unidade {#BATTERY_NUM}: Status da Bateria da Controladora</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.15.1.4.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.diskarray.cache.battery.status[batteryState.{#SNMPINDEX}]</key>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>IDRAC-BATTERY::State</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>0d784c26f6b84156ae994be3e048a5d5</uuid>
+                                    <expression>count(/Template - Dell iDRAC/system.hw.diskarray.cache.battery.status[batteryState.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_ARRAY_CACHE_BATTERY_CRIT_STATUS}&quot;)=1</expression>
+                                    <name>Battery {#BATTERY_NUM}: Bateria da Controladora RAID está em estado crítico</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>9d557d5442b44da7bf86a9829db2b39d</uuid>
+                                    <expression>count(/Template - Dell iDRAC/system.hw.diskarray.cache.battery.status[batteryState.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_ARRAY_CACHE_BATTERY_WARN_STATUS}&quot;)=1</expression>
+                                    <name>Battery {#BATTERY_NUM}: Bateria da Controladora RAID está em estado de alerta</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>WARNING</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Battery {#BATTERY_NUM}: Bateria da Controladora RAID está em estado crítico</name>
+                                            <expression>count(/Template - Dell iDRAC/system.hw.diskarray.cache.battery.status[batteryState.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_ARRAY_CACHE_BATTERY_CRIT_STATUS}&quot;)=1</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>cd0c03afb7f4467681f1934ffee951ba</uuid>
+                                    <expression>count(/Template - Dell iDRAC/system.hw.diskarray.cache.battery.status[batteryState.{#SNMPINDEX}],#1,&quot;ne&quot;,&quot;{$DISK_ARRAY_CACHE_BATTERY_OK_STATUS}&quot;)=1</expression>
+                                    <name>Battery {#BATTERY_NUM}: Bateria da Controladora RAID não está em estado ótimo</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>WARNING</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Battery {#BATTERY_NUM}: Bateria da Controladora RAID está em estado crítico</name>
+                                            <expression>count(/Template - Dell iDRAC/system.hw.diskarray.cache.battery.status[batteryState.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_ARRAY_CACHE_BATTERY_CRIT_STATUS}&quot;)=1</expression>
+                                        </dependency>
+                                        <dependency>
+                                            <name>Battery {#BATTERY_NUM}: Bateria da Controladora RAID está em estado de alerta</name>
+                                            <expression>count(/Template - Dell iDRAC/system.hw.diskarray.cache.battery.status[batteryState.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_ARRAY_CACHE_BATTERY_WARN_STATUS}&quot;)=1</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>d41df631501f412fae20720eacab1a04</uuid>
+                    <name>Descoberta de FAN</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.4.1.674.10892.5.4.700.12.1.5,{#FAN_DESCR},1.3.6.1.4.1.674.10892.5.4.700.12.1.8,{#TYPE},1.3.6.1.4.1.674.10892.5.4.700.12.1.7]</snmp_oid>
+                    <key>fan.discovery</key>
+                    <delay>1h</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#TYPE}</macro>
+                                <value>3</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>c1624ba9ddaf4d57b4b8259212825c70</uuid>
+                            <name>FAN - {#FAN_DESCR}: Speed</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.700.12.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>sensor.fan.speed[coolingDeviceReading.{#SNMPINDEX}]</key>
+                            <history>1w</history>
+                            <units>rpm</units>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>90b425b84f064ff9b0ebb9a5ec10e822</uuid>
+                            <name>FAN - {#FAN_DESCR}: Status</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.700.12.1.5.{#SNMPINDEX}</snmp_oid>
+                            <key>sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>IDRAC::StatusProbe</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>1ad870e1861a4685bb335b918fba439f</uuid>
+                                    <expression>count(/Template - Dell iDRAC/sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$FAN_CRIT_STATUS:\&quot;criticalUpper\&quot;}&quot;)=1 or count(/Template - Dell iDRAC/sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$FAN_CRIT_STATUS:\&quot;nonRecoverableUpper\&quot;}&quot;)=1 or count(/Template - Dell iDRAC/sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$FAN_CRIT_STATUS:\&quot;criticalLower\&quot;}&quot;)=1 or count(/Template - Dell iDRAC/sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$FAN_CRIT_STATUS:\&quot;nonRecoverableLower\&quot;}&quot;)=1 or count(/Template - Dell iDRAC/sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$FAN_CRIT_STATUS:\&quot;failed\&quot;}&quot;)=1</expression>
+                                    <name>{#FAN_DESCR}: Fan está em estado crítico</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>a1e8c7ce604543c787e982bc4f71b871</uuid>
+                                    <expression>count(/Template - Dell iDRAC/sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$FAN_WARN_STATUS:\&quot;nonCriticalUpper\&quot;}&quot;)=1 or count(/Template - Dell iDRAC/sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$FAN_WARN_STATUS:\&quot;nonCriticalLower\&quot;}&quot;)=1</expression>
+                                    <name>{#FAN_DESCR}: Fan está em estado de alerta</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>WARNING</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>{#FAN_DESCR}: Fan está em estado crítico</name>
+                                            <expression>count(/Template - Dell iDRAC/sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$FAN_CRIT_STATUS:\&quot;criticalUpper\&quot;}&quot;)=1 or count(/Template - Dell iDRAC/sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$FAN_CRIT_STATUS:\&quot;nonRecoverableUpper\&quot;}&quot;)=1 or count(/Template - Dell iDRAC/sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$FAN_CRIT_STATUS:\&quot;criticalLower\&quot;}&quot;)=1 or count(/Template - Dell iDRAC/sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$FAN_CRIT_STATUS:\&quot;nonRecoverableLower\&quot;}&quot;)=1 or count(/Template - Dell iDRAC/sensor.fan.status[coolingDeviceStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$FAN_CRIT_STATUS:\&quot;failed\&quot;}&quot;)=1</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>376d8a88507049b09f47046123d7db5f</uuid>
+                    <name>Descoberta de Controladora RAID</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.4.1.674.10892.5.5.1.20.130.1.1.38,{#CNTLR_NAME},1.3.6.1.4.1.674.10892.5.5.1.20.130.1.1.79]</snmp_oid>
+                    <key>physicaldisk.arr.discovery</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>9cd113396640424ebe9d5fd660fbae18</uuid>
+                            <name>Controller - {#CNTLR_NAME}: Modelo da Controladora</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.1.1.2.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.diskarray.model[controllerName.{#SNMPINDEX}]</key>
+                            <delay>1d</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Tipo</tag>
+                                    <value>Controladora de Array de Disco</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>99b182d0869b4647a9d83f53135e26f5</uuid>
+                            <name>Controller - {#CNTLR_NAME}: Status da Controladora</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.1.1.38.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.diskarray.status[controllerComponentStatus.{#SNMPINDEX}]</key>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>IDRAC::ObjectStatus</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Tipo</tag>
+                                    <value>Controladora de Array de Disco</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>6dcbb7bb34fa4ad79014fe05d72e9f53</uuid>
+                                    <expression>count(/Template - Dell iDRAC/system.hw.diskarray.status[controllerComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_ARRAY_CRIT_STATUS}&quot;)=1</expression>
+                                    <name>Controller - {#CNTLR_NAME}: Controladora RAID está em estado crítico</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>HIGH</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Controller - {#CNTLR_NAME}: Controladora RAID está em estado irrecuperável</name>
+                                            <expression>count(/Template - Dell iDRAC/system.hw.diskarray.status[controllerComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_ARRAY_FAIL_STATUS}&quot;)=1</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>90d1dc0acd7a4c36ac67dd1387bd1141</uuid>
+                                    <expression>count(/Template - Dell iDRAC/system.hw.diskarray.status[controllerComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_ARRAY_WARN_STATUS}&quot;)=1</expression>
+                                    <name>Controller - {#CNTLR_NAME}: Controladora RAID está em estado de alerta</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>AVERAGE</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Controller - {#CNTLR_NAME}: Controladora RAID está em estado crítico</name>
+                                            <expression>count(/Template - Dell iDRAC/system.hw.diskarray.status[controllerComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_ARRAY_CRIT_STATUS}&quot;)=1</expression>
+                                        </dependency>
+                                        <dependency>
+                                            <name>Controller - {#CNTLR_NAME}: Controladora RAID está em estado irrecuperável</name>
+                                            <expression>count(/Template - Dell iDRAC/system.hw.diskarray.status[controllerComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_ARRAY_FAIL_STATUS}&quot;)=1</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>62d68e1976eb478a811214384d4c3b61</uuid>
+                                    <expression>count(/Template - Dell iDRAC/system.hw.diskarray.status[controllerComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_ARRAY_FAIL_STATUS}&quot;)=1</expression>
+                                    <name>Controller - {#CNTLR_NAME}: Controladora RAID está em estado irrecuperável</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>DISASTER</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>0ab76e36f30f462bbb0dd449344d6ff9</uuid>
+                    <name>Descoberta de Disco Físico</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.1,{#DISK_NAME},1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.2]</snmp_oid>
+                    <key>physicaldisk.discovery</key>
+                    <delay>1h</delay>
+                    <lifetime>7d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>869fab6bb59d4f59972f71a12deab01d</uuid>
+                            <name>Disk - {#DISK_NAME}: Tipo da Mídia</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.35.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.physicaldisk.media_type[physicalDiskMediaType.{#SNMPINDEX}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>IDRAC-PHYSICALDISK::MediaType</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Tipo</tag>
+                                    <value>Disco Físico</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>edcd1af94c234e88a474b347f764ac37</uuid>
+                            <name>Disk - {#DISK_NAME}: Modelo do Disco</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.physicaldisk.model[physicalDiskProductID.{#SNMPINDEX}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Tipo</tag>
+                                    <value>Disco Físico</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>66d9e9a07c0c4c78815023dd555c08ed</uuid>
+                            <name>Disk - {#DISK_NAME}: Serial Number do Disco</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.7.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.physicaldisk.serialnumber[physicalDiskSerialNo.{#SNMPINDEX}]</key>
+                            <delay>1d</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Tipo</tag>
+                                    <value>Disco Físico</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>02d77375cf13482896d7bdf41bacc3b8</uuid>
+                                    <expression>last(/Template - Dell iDRAC/system.hw.physicaldisk.serialnumber[physicalDiskSerialNo.{#SNMPINDEX}],#1)&lt;&gt;last(/Template - Dell iDRAC/system.hw.physicaldisk.serialnumber[physicalDiskSerialNo.{#SNMPINDEX}],#2) and length(last(/Template - Dell iDRAC/system.hw.physicaldisk.serialnumber[physicalDiskSerialNo.{#SNMPINDEX}]))&gt;0</expression>
+                                    <name>Disk - {#DISK_NAME}: O disco foi substituído (Novo Serial Number)</name>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>19054d7ea5ff41dfa0f525b97bd15bb6</uuid>
+                            <name>Disk - {#DISK_NAME}: Volume do Disco</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.11.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.physicaldisk.size[physicalDiskCapacityInMB.{#SNMPINDEX}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <units>B</units>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>1048576</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <tags>
+                                <tag>
+                                    <tag>Tipo</tag>
+                                    <value>Disco Físico</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>23544d0b97344522a6a9e0ac7098c099</uuid>
+                            <name>Disk - {#DISK_NAME}: Status SMART</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.31.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.physicaldisk.smart_status[physicalDiskSmartAlertIndication.{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>IDRAC::BooleanType</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Tipo</tag>
+                                    <value>Disco Físico</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>db46e3e123db463fa4f78477805591c3</uuid>
+                                    <expression>count(/Template - Dell iDRAC/system.hw.physicaldisk.smart_status[physicalDiskSmartAlertIndication.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_SMART_FAIL_STATUS}&quot;)=1</expression>
+                                    <name>Disk - {#DISK_NAME}: Disco Físico S.M.A.R.T. falhou</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>HIGH</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Disk - {#DISK_NAME}: Disco Físico falhou</name>
+                                            <expression>count(/Template - Dell iDRAC/system.hw.physicaldisk.status[physicalDiskComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_CRIT_STATUS}&quot;)=1 or count(/Template - Dell iDRAC/system.hw.physicaldisk.status[physicalDiskComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_FAIL_STATUS}&quot;)=1</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>a8c70f84cec64555bcef9cba7c4e2bfc</uuid>
+                            <name>Disk - {#DISK_NAME}: Status</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.24.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.physicaldisk.status[physicalDiskComponentStatus.{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>IDRAC-PHYSICALDISK::ComponentStatus</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Tipo</tag>
+                                    <value>Disco Físico</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>a8c7e72dfd124b2c9a0fe460a582fede</uuid>
+                                    <expression>count(/Template - Dell iDRAC/system.hw.physicaldisk.status[physicalDiskComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_WARN_STATUS}&quot;)=1</expression>
+                                    <name>Disk - {#DISK_NAME}: Disco Físico está em estado de alerta</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>WARNING</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Disk - {#DISK_NAME}: Disco Físico falhou</name>
+                                            <expression>count(/Template - Dell iDRAC/system.hw.physicaldisk.status[physicalDiskComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_CRIT_STATUS}&quot;)=1 or count(/Template - Dell iDRAC/system.hw.physicaldisk.status[physicalDiskComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_FAIL_STATUS}&quot;)=1</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>e59668b8b0eb4458844bd5179ebffed5</uuid>
+                                    <expression>count(/Template - Dell iDRAC/system.hw.physicaldisk.status[physicalDiskComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_CRIT_STATUS}&quot;)=1 or count(/Template - Dell iDRAC/system.hw.physicaldisk.status[physicalDiskComponentStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$DISK_FAIL_STATUS}&quot;)=1</expression>
+                                    <name>Disk - {#DISK_NAME}: Disco Físico falhou</name>
+                                    <opdata>Current status: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>7985b90662824782bbb5342caf64c6a1</uuid>
+                    <name>Descoberta de Fonte de Energia (PSU)</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.4.1.674.10892.5.4.600.12.1.5,{#PSU_DESCR},1.3.6.1.4.1.674.10892.5.4.600.12.1.8]</snmp_oid>
+                    <key>psu.discovery</key>
+                    <delay>1h</delay>
+                    <lifetime>1w</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>e660778a0fe540dbb9f6d43f33de31b5</uuid>
+                            <name>PSU - {#PSU_DESCR}: Status da Fonte</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.600.12.1.5.{#SNMPINDEX}</snmp_oid>
+                            <key>sensor.psu.status[powerSupplyStatus.{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>IDRAC::ObjectStatus</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>97c969530b0a4b628bfe05574e34a8c2</uuid>
+                                    <expression>count(/Template - Dell iDRAC/sensor.psu.status[powerSupplyStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$PSU_CRIT_STATUS}&quot;)=1 or count(/Template - Dell iDRAC/sensor.psu.status[powerSupplyStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$PSU_FAIL_STATUS}&quot;)=1</expression>
+                                    <name>{#PSU_DESCR}: Power Supply está em estado crítico</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>4d1e86c660084a43a7e22f28a3bfce91</uuid>
+                                    <expression>count(/Template - Dell iDRAC/sensor.psu.status[powerSupplyStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$PSU_WARN_STATUS}&quot;)=1</expression>
+                                    <name>{#PSU_DESCR}: Power Supply está em estado de alerta</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>WARNING</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>{#PSU_DESCR}: Power Supply está em estado crítico</name>
+                                            <expression>count(/Template - Dell iDRAC/sensor.psu.status[powerSupplyStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$PSU_CRIT_STATUS}&quot;)=1 or count(/Template - Dell iDRAC/sensor.psu.status[powerSupplyStatus.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$PSU_FAIL_STATUS}&quot;)=1</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>cbcf0c462ea24982b25bf2b955f9bc93</uuid>
+                    <name>Descoberta de Temperatura do Ambiente</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.4.1.674.10892.5.4.700.20.1.1,{#SENSOR_LOCALE},1.3.6.1.4.1.674.10892.5.4.700.20.1.8]</snmp_oid>
+                    <key>temp.ambient.discovery</key>
+                    <delay>1h</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SENSOR_LOCALE}</macro>
+                                <value>.*Inlet Temp.*</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>1w</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>de941449dc2a43fbaefcd0df5b66643b</uuid>
+                            <name>Sensor - {#SENSOR_LOCALE}: Status</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.700.20.1.5.{#SNMPINDEX}</snmp_oid>
+                            <key>sensor.temp.status[temperatureProbeStatus.Ambient.{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>IDRAC::StatusProbe</name>
+                            </valuemap>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>0b0715f36a4748389951e6eba0c60e90</uuid>
+                            <name>Sensor - {#SENSOR_LOCALE}: Temperatura (ºC)</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.700.20.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>sensor.temp.value[temperatureProbeReading.Ambient.{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>1w</history>
+                            <value_type>FLOAT</value_type>
+                            <units>°C</units>
+                            <valuemap>
+                                <name>IDRAC::StatusProbe</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>0.1</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <uuid>b872261f4efc4b229984fc539183ec24</uuid>
+                            <expression>avg(/Template - Dell iDRAC/sensor.temp.value[temperatureProbeReading.Ambient.{#SNMPINDEX}],5m)&gt;{$TEMP_CRIT_AMBIENT}
+or
+last(/Template - Dell iDRAC/sensor.temp.status[temperatureProbeStatus.Ambient.{#SNMPINDEX}])={$TEMP_CRIT_STATUS}
+or
+last(/Template - Dell iDRAC/sensor.temp.status[temperatureProbeStatus.Ambient.{#SNMPINDEX}])={$TEMP_DISASTER_STATUS}</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>max(/Template - Dell iDRAC/sensor.temp.value[temperatureProbeReading.Ambient.{#SNMPINDEX}],5m)&lt;{$TEMP_CRIT_AMBIENT}-3</recovery_expression>
+                            <name>Status - {#SENSOR_LOCALE}: Temperatura está acima do nível crítico (&gt;{$TEMP_CRIT_AMBIENT}ºC)</name>
+                            <opdata>Current value: {ITEM.LASTVALUE1}</opdata>
+                            <priority>HIGH</priority>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <uuid>a8ac252c30a541999cf4e63631990648</uuid>
+                            <expression>avg(/Template - Dell iDRAC/sensor.temp.value[temperatureProbeReading.Ambient.{#SNMPINDEX}],5m)&gt;{$TEMP_WARN_AMBIENT}
+or
+last(/Template - Dell iDRAC/sensor.temp.status[temperatureProbeStatus.Ambient.{#SNMPINDEX}])={$TEMP_WARN_STATUS}</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>max(/Template - Dell iDRAC/sensor.temp.value[temperatureProbeReading.Ambient.{#SNMPINDEX}],5m)&lt;{$TEMP_WARN_AMBIENT}-3</recovery_expression>
+                            <name>Status - {#SENSOR_LOCALE}: Temperatura está acima do nível de alerta (&gt;{$TEMP_WARN_AMBIENT}ºC)</name>
+                            <opdata>Current value: {ITEM.LASTVALUE1}</opdata>
+                            <priority>WARNING</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>Status - {#SENSOR_LOCALE}: Temperatura está acima do nível crítico (&gt;{$TEMP_CRIT_AMBIENT}ºC)</name>
+                                    <expression>avg(/Template - Dell iDRAC/sensor.temp.value[temperatureProbeReading.Ambient.{#SNMPINDEX}],5m)&gt;{$TEMP_CRIT_AMBIENT}
+or
+last(/Template - Dell iDRAC/sensor.temp.status[temperatureProbeStatus.Ambient.{#SNMPINDEX}])={$TEMP_CRIT_STATUS}
+or
+last(/Template - Dell iDRAC/sensor.temp.status[temperatureProbeStatus.Ambient.{#SNMPINDEX}])={$TEMP_DISASTER_STATUS}</expression>
+                                    <recovery_expression>max(/Template - Dell iDRAC/sensor.temp.value[temperatureProbeReading.Ambient.{#SNMPINDEX}],5m)&lt;{$TEMP_CRIT_AMBIENT}-3</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>f7dd46de6dd14bbe8575d69ef20df66a</uuid>
+                    <name>Descoberta de Temperatura CPU</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.4.1.674.10892.5.4.700.20.1.1,{#SENSOR_LOCALE},1.3.6.1.4.1.674.10892.5.4.700.20.1.8]</snmp_oid>
+                    <key>temp.cpu.discovery</key>
+                    <delay>1h</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SENSOR_LOCALE}</macro>
+                                <value>.*CPU.*</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>1w</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>8db964a15a8543218c6c776cc261a7fb</uuid>
+                            <name>{#SENSOR_LOCALE}: Status</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.700.20.1.5.{#SNMPINDEX}</snmp_oid>
+                            <key>sensor.temp.status[temperatureProbeStatus.CPU.{#SNMPINDEX}]</key>
+                            <delay>3m</delay>
+                            <history>2w</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>IDRAC::StatusProbe</name>
+                            </valuemap>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>cd37d7e52ba34035ac5532a8d3fb8690</uuid>
+                            <name>{#SENSOR_LOCALE}: Temperatura (ºC)</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.700.20.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>sensor.temp.value[temperatureProbeReading.CPU.{#SNMPINDEX}]</key>
+                            <delay>3m</delay>
+                            <value_type>FLOAT</value_type>
+                            <units>°C</units>
+                            <valuemap>
+                                <name>IDRAC::StatusProbe</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>0.1</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <uuid>fd56cb8047094a3eba2c18c66fdfb424</uuid>
+                            <expression>avg(/Template - Dell iDRAC/sensor.temp.value[temperatureProbeReading.CPU.{#SNMPINDEX}],5m)&gt;{$TEMP_CRIT_CPU}
+or
+last(/Template - Dell iDRAC/sensor.temp.status[temperatureProbeStatus.CPU.{#SNMPINDEX}])={$TEMP_CRIT_STATUS}
+or
+last(/Template - Dell iDRAC/sensor.temp.status[temperatureProbeStatus.CPU.{#SNMPINDEX}])={$TEMP_DISASTER_STATUS}</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>max(/Template - Dell iDRAC/sensor.temp.value[temperatureProbeReading.CPU.{#SNMPINDEX}],5m)&lt;{$TEMP_CRIT_CPU}-3</recovery_expression>
+                            <name>CPU - {#SENSOR_LOCALE}: Temperatura está acima do nível crítico (&gt;{$TEMP_CRIT_CPU}ºC)</name>
+                            <opdata>Current value: {ITEM.LASTVALUE1}</opdata>
+                            <priority>HIGH</priority>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <uuid>97fbaaf5c2fd47ec9ba117f67ee4c3d9</uuid>
+                            <expression>avg(/Template - Dell iDRAC/sensor.temp.value[temperatureProbeReading.CPU.{#SNMPINDEX}],5m)&gt;{$TEMP_WARN_CPU}
+or
+last(/Template - Dell iDRAC/sensor.temp.status[temperatureProbeStatus.CPU.{#SNMPINDEX}])={$TEMP_WARN_STATUS}</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>max(/Template - Dell iDRAC/sensor.temp.value[temperatureProbeReading.CPU.{#SNMPINDEX}],5m)&lt;{$TEMP_WARN_CPU}-3</recovery_expression>
+                            <name>CPU - {#SENSOR_LOCALE}: Temperatura está acima do nível de alerta (&gt;{$TEMP_WARN_CPU}ºC)</name>
+                            <opdata>Current value: {ITEM.LASTVALUE1}</opdata>
+                            <priority>WARNING</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>CPU - {#SENSOR_LOCALE}: Temperatura está acima do nível crítico (&gt;{$TEMP_CRIT_CPU}ºC)</name>
+                                    <expression>avg(/Template - Dell iDRAC/sensor.temp.value[temperatureProbeReading.CPU.{#SNMPINDEX}],5m)&gt;{$TEMP_CRIT_CPU}
+or
+last(/Template - Dell iDRAC/sensor.temp.status[temperatureProbeStatus.CPU.{#SNMPINDEX}])={$TEMP_CRIT_STATUS}
+or
+last(/Template - Dell iDRAC/sensor.temp.status[temperatureProbeStatus.CPU.{#SNMPINDEX}])={$TEMP_DISASTER_STATUS}</expression>
+                                    <recovery_expression>max(/Template - Dell iDRAC/sensor.temp.value[temperatureProbeReading.CPU.{#SNMPINDEX}],5m)&lt;{$TEMP_CRIT_CPU}-3</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>974d683794294f49beeea8c28ba3f77d</uuid>
+                    <name>Descoberta de Disco Virtual</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SNMPVALUE},1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.1,{#DISK_NAME},1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.2]</snmp_oid>
+                    <key>virtualdisk.discovery</key>
+                    <delay>1h</delay>
+                    <lifetime>1w</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>278311b2e4924725ad55dc2c280946a3</uuid>
+                            <name>Storage - group{#SNMPVALUE}({#DISK_NAME}): Tipo de RAID</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.13.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.virtualdisk.layout[virtualDiskLayout.{#SNMPINDEX}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <valuemap>
+                                <name>IDRAC-VIRTUALDISK::DiskLayout</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Tipo</tag>
+                                    <value>Disco Virtual</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>cbec0231bee940a78e071a81552b7d76</uuid>
+                            <name>Storage - group{#SNMPVALUE}({#DISK_NAME}): Volume Total</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.virtualdisk.size[virtualDiskSizeInMB.{#SNMPINDEX}]</key>
+                            <delay>1h</delay>
+                            <history>1w</history>
+                            <trends>0</trends>
+                            <units>B</units>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>1048576</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <tags>
+                                <tag>
+                                    <tag>Tipo</tag>
+                                    <value>Disco Virtual</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>1713aa2b60364ddf8ae30a460fd174ea</uuid>
+                            <name>Storage - group{#SNMPVALUE}({#DISK_NAME}): Estado Atual</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.30.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.virtualdisk.state[virtualDiskOperationalState.{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>1w</history>
+                            <valuemap>
+                                <name>IDRAC-VIRTUALDISK::OperState</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Tipo</tag>
+                                    <value>Disco Virtual</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>5242532a786e480289cf5e463a048488</uuid>
+                            <name>Storage - group{#SNMPVALUE}({#DISK_NAME}): Status</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.4.{#SNMPINDEX}</snmp_oid>
+                            <key>system.hw.virtualdisk.status[virtualDiskState.{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>1w</history>
+                            <valuemap>
+                                <name>IDRAC-VIRTUALDISK::DiskState</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Tipo</tag>
+                                    <value>Disco VIrtual</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>aa86cf0a559f4b119f7e7ab5c6ddc057</uuid>
+                                    <expression>count(/Template - Dell iDRAC/system.hw.virtualdisk.status[virtualDiskState.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$VDISK_WARN_STATUS}&quot;)=1</expression>
+                                    <name>Disk {#SNMPVALUE}({#DISK_NAME}): Disco Virtual está em estado de alerta</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>AVERAGE</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Disk {#SNMPVALUE}({#DISK_NAME}): Disco Virtual falhou</name>
+                                            <expression>count(/Template - Dell iDRAC/system.hw.virtualdisk.status[virtualDiskState.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$VDISK_CRIT_STATUS}&quot;)=1</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>cfc2172635834b17b7c2cebcd1b5d71f</uuid>
+                                    <expression>count(/Template - Dell iDRAC/system.hw.virtualdisk.status[virtualDiskState.{#SNMPINDEX}],#1,&quot;eq&quot;,&quot;{$VDISK_CRIT_STATUS}&quot;)=1</expression>
+                                    <name>Disk {#SNMPVALUE}({#DISK_NAME}): Disco Virtual falhou</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <tags>
+                <tag>
+                    <tag>Tipo</tag>
+                    <value>Dell</value>
+                </tag>
+            </tags>
+            <macros>
+                <macro>
+                    <macro>{$DISK_ARRAY_CACHE_BATTERY_CRIT_STATUS}</macro>
+                    <value>3</value>
+                </macro>
+                <macro>
+                    <macro>{$DISK_ARRAY_CACHE_BATTERY_OK_STATUS}</macro>
+                    <value>2</value>
+                </macro>
+                <macro>
+                    <macro>{$DISK_ARRAY_CACHE_BATTERY_WARN_STATUS}</macro>
+                    <value>4</value>
+                </macro>
+                <macro>
+                    <macro>{$DISK_ARRAY_CRIT_STATUS}</macro>
+                    <value>5</value>
+                </macro>
+                <macro>
+                    <macro>{$DISK_ARRAY_FAIL_STATUS}</macro>
+                    <value>6</value>
+                </macro>
+                <macro>
+                    <macro>{$DISK_ARRAY_WARN_STATUS}</macro>
+                    <value>4</value>
+                </macro>
+                <macro>
+                    <macro>{$DISK_CRIT_STATUS}</macro>
+                    <value>5</value>
+                </macro>
+                <macro>
+                    <macro>{$DISK_FAIL_STATUS}</macro>
+                    <value>6</value>
+                </macro>
+                <macro>
+                    <macro>{$DISK_SMART_FAIL_STATUS}</macro>
+                    <value>1</value>
+                </macro>
+                <macro>
+                    <macro>{$DISK_WARN_STATUS}</macro>
+                    <value>4</value>
+                </macro>
+                <macro>
+                    <macro>{$FAN_CRIT_STATUS:&quot;criticalLower&quot;}</macro>
+                    <value>8</value>
+                </macro>
+                <macro>
+                    <macro>{$FAN_CRIT_STATUS:&quot;criticalUpper&quot;}</macro>
+                    <value>5</value>
+                </macro>
+                <macro>
+                    <macro>{$FAN_CRIT_STATUS:&quot;failed&quot;}</macro>
+                    <value>10</value>
+                </macro>
+                <macro>
+                    <macro>{$FAN_CRIT_STATUS:&quot;nonRecoverableLower&quot;}</macro>
+                    <value>9</value>
+                </macro>
+                <macro>
+                    <macro>{$FAN_CRIT_STATUS:&quot;nonRecoverableUpper&quot;}</macro>
+                    <value>6</value>
+                </macro>
+                <macro>
+                    <macro>{$FAN_WARN_STATUS:&quot;nonCriticalLower&quot;}</macro>
+                    <value>7</value>
+                </macro>
+                <macro>
+                    <macro>{$FAN_WARN_STATUS:&quot;nonCriticalUpper&quot;}</macro>
+                    <value>4</value>
+                </macro>
+                <macro>
+                    <macro>{$HEALTH_CRIT_STATUS}</macro>
+                    <value>5</value>
+                </macro>
+                <macro>
+                    <macro>{$HEALTH_DISASTER_STATUS}</macro>
+                    <value>6</value>
+                </macro>
+                <macro>
+                    <macro>{$HEALTH_WARN_STATUS}</macro>
+                    <value>4</value>
+                </macro>
+                <macro>
+                    <macro>{$ICMP_LOSS_WARN}</macro>
+                    <value>20</value>
+                </macro>
+                <macro>
+                    <macro>{$ICMP_RESPONSE_TIME_WARN}</macro>
+                    <value>0.15</value>
+                </macro>
+                <macro>
+                    <macro>{$PSU_CRIT_STATUS:&quot;critical&quot;}</macro>
+                    <value>5</value>
+                </macro>
+                <macro>
+                    <macro>{$PSU_CRIT_STATUS:&quot;nonRecoverable&quot;}</macro>
+                    <value>6</value>
+                </macro>
+                <macro>
+                    <macro>{$PSU_WARN_STATUS:&quot;nonCritical&quot;}</macro>
+                    <value>4</value>
+                </macro>
+                <macro>
+                    <macro>{$SNMP.TIMEOUT}</macro>
+                    <value>5m</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_CRIT_AMBIENT}</macro>
+                    <value>35</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_CRIT_CPU}</macro>
+                    <value>75</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_CRIT_STATUS}</macro>
+                    <value>5</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_DISASTER_STATUS}</macro>
+                    <value>6</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_WARN_AMBIENT}</macro>
+                    <value>30</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_WARN_CPU}</macro>
+                    <value>70</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_WARN_STATUS}</macro>
+                    <value>4</value>
+                </macro>
+                <macro>
+                    <macro>{$VDISK_CRIT_STATUS}</macro>
+                    <value>3</value>
+                </macro>
+                <macro>
+                    <macro>{$VDISK_WARN_STATUS}</macro>
+                    <value>4</value>
+                </macro>
+            </macros>
+            <valuemaps>
+                <valuemap>
+                    <uuid>dc4690e557d74c8480eafa6111728ebc</uuid>
+                    <name>IDRAC-BATTERY::State</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Ready</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Failed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Degraded</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>Missing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>Charging</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>Below threshold</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>cebace3813434bbdbc9c99ee9c392747</uuid>
+                    <name>IDRAC-PHYSICALDISK::ComponentStatus</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Other</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Ok</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>NonCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>Critical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>NonRecoverable</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>f36ad53bd5404edcb42d4f934101c087</uuid>
+                    <name>IDRAC-PHYSICALDISK::MediaType</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>HDD</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>SSD</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>83635ca20ff5459fb49a03701e8cd779</uuid>
+                    <name>IDRAC-VIRTUALDISK::DiskLayout</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Other</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>RAID-0</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>RAID-1</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>RAID-5</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>RAID-6</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>RAID-10</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>RAID-50</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>RAID-60</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>Concatenated RAID 1</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>10</value>
+                            <newvalue>Concatenated RAID 5</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>7ade877df83443a0b29ff9bcd5b172a8</uuid>
+                    <name>IDRAC-VIRTUALDISK::DiskState</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Online</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Failed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Degraded</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>b60c621543d942dd8b09a491cbd7af9f</uuid>
+                    <name>IDRAC-VIRTUALDISK::OperState</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Not applicable</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Reconstructing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Resynching</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Initializing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>Background init</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>08fbf1b5b8a94fcd981c005870ec7ade</uuid>
+                    <name>IDRAC::BooleanType</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>Ok</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Failed</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>7790b18f98eb4803833f15faf35f6877</uuid>
+                    <name>IDRAC::ObjectStatus</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Other</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Ok</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>NonCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>Critical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>NonRecoverable</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>7a1778a82e9f43cfb4cf691700477930</uuid>
+                    <name>IDRAC::StatusProbe</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>other</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>ok</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>nonCriticalUpper</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>criticalUpper</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>nonRecoverableUpper</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>nonCriticalLower</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>criticalLower</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>nonRecoverableLower</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>10</value>
+                            <newvalue>failed</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>c6e609c7be5e4883a4096cf436327846</uuid>
+                    <name>SNMP::HostAvailable</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>NotAvailable</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Available</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>f7bee6a1252149da884cd6ff72fea134</uuid>
+                    <name>SNMP::ServiceState</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>Down</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Up</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+            </valuemaps>
+        </template>
+    </templates>
+</zabbix_export>

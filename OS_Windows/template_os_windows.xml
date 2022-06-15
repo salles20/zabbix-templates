@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>6.0</version>
+    <date>2022-06-14T18:46:49Z</date>
+    <groups>
+        <group>
+            <uuid>b4c89977ca774eb59158ab663b496692</uuid>
+            <name>Devices</name>
+        </group>
+        <group>
+            <uuid>8f0bf726783149ef9638d627f4972f08</uuid>
+            <name>Devices/Maquinas Virtuais</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <uuid>6ff51eee6133469bae7b529abca5591d</uuid>
+            <template>Template - Descoberta de Disco</template>
+            <name>Template - Descoberta de Disco</name>
+            <description>Template para Descoberta de Disco em Sistemas Operacionais Windows e Linux via Zabbix Agent
+
+Modelo de Validacao: Windows Server 2016 e Linux Ubuntu 20.04
+
+Por: Vinicius Goncalves</description>
+            <groups>
+                <group>
+                    <name>Devices/Maquinas Virtuais</name>
+                </group>
+            </groups>
+            <discovery_rules>
+                <discovery_rule>
+                    <uuid>83a62b55c789441a881350fd81a050a8</uuid>
+                    <name>Descoberta de Storage</name>
+                    <key>vfs.fs.discovery</key>
+                    <delay>1h</delay>
+                    <filter>
+                        <evaltype>AND</evaltype>
+                        <conditions>
+                            <condition>
+                                <macro>{#FSTYPE}</macro>
+                                <value>{$VFS.FS.FSTYPE.MATCHES}</value>
+                                <formulaid>E</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#FSTYPE}</macro>
+                                <value>{$VFS.FS.FSTYPE.NOT_MATCHES}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>F</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#FSNAME}</macro>
+                                <value>{$VFS.FS.FSNAME.MATCHES}</value>
+                                <formulaid>C</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#FSNAME}</macro>
+                                <value>{$VFS.FS.FSNAME.NOT_MATCHES}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>D</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#FSDRIVETYPE}</macro>
+                                <value>{$VFS.FS.FSDRIVETYPE.MATCHES}</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#FSDRIVETYPE}</macro>
+                                <value>{$VFS.FS.FSDRIVETYPE.NOT_MATCHES}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>B</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>1d81e281e4e14e2980c2994fa8a96988</uuid>
+                            <name>Disk - {#FSNAME} Volume Disponível</name>
+                            <key>vfs.fs.size[{#FSNAME},free]</key>
+                            <history>7d</history>
+                            <units>B</units>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>9a5a5217441a4ef6a90e9ba1e3db42cd</uuid>
+                            <name>Disk - {#FSNAME} Volume Utilizado (%)</name>
+                            <key>vfs.fs.size[{#FSNAME},pused]</key>
+                            <history>7d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>a8b55ffbd0ac405aabccb605a8770f5e</uuid>
+                                    <expression>last(/Template - Descoberta de Disco/vfs.fs.size[{#FSNAME},pused])&gt;{$VOLUME_WARN_UTIL}</expression>
+                                    <name>{#FSNAME}: Volume Utilizado está alto (&gt;{$VOLUME_WARN_UTIL}%)</name>
+                                    <priority>WARNING</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>{#FSNAME}: Volume Utilizado está muito alto (&gt;{$VOLUME_CRIT_UTIL}%)</name>
+                                            <expression>last(/Template - Descoberta de Disco/vfs.fs.size[{#FSNAME},pused])&gt;{$VOLUME_CRIT_UTIL}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>d4b6bdaa60a342a3ae79fecdd3745f0b</uuid>
+                                    <expression>last(/Template - Descoberta de Disco/vfs.fs.size[{#FSNAME},pused])&gt;{$VOLUME_CRIT_UTIL}</expression>
+                                    <name>{#FSNAME}: Volume Utilizado está muito alto (&gt;{$VOLUME_CRIT_UTIL}%)</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>7820ae90b2154f369fdf4ab6d966879d</uuid>
+                            <name>Disk - {#FSNAME} Volume Total</name>
+                            <key>vfs.fs.size[{#FSNAME},total]</key>
+                            <history>7d</history>
+                            <units>B</units>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>d72f352041e7409ba331962f586f5844</uuid>
+                            <name>Disk - {#FSNAME} Volume Utilizado</name>
+                            <key>vfs.fs.size[{#FSNAME},used]</key>
+                            <history>7d</history>
+                            <units>B</units>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>85311f4480a64ff69fb8e61a99c26e79</uuid>
+                            <name>Disk - {#FSNAME} Utilização do Espaço em Disco</name>
+                            <width>600</width>
+                            <height>340</height>
+                            <yaxismax>0</yaxismax>
+                            <show_work_period>NO</show_work_period>
+                            <show_triggers>NO</show_triggers>
+                            <type>PIE</type>
+                            <show_3d>YES</show_3d>
+                            <graph_items>
+                                <graph_item>
+                                    <color>969696</color>
+                                    <calc_fnc>LAST</calc_fnc>
+                                    <item>
+                                        <host>Template - Descoberta de Disco</host>
+                                        <key>vfs.fs.size[{#FSNAME},free]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>C80000</color>
+                                    <calc_fnc>LAST</calc_fnc>
+                                    <item>
+                                        <host>Template - Descoberta de Disco</host>
+                                        <key>vfs.fs.size[{#FSNAME},used]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$VOLUME_CRIT_UTIL}</macro>
+                    <value>95</value>
+                </macro>
+                <macro>
+                    <macro>{$VOLUME_WARN_UTIL}</macro>
+                    <value>90</value>
+                </macro>
+            </macros>
+        </template>
+        <template>
+            <uuid>c85d9d4f8030452399bb0200519202ad</uuid>
+            <template>Template - Descoberta Interface de Rede Windows</template>
+            <name>Template - Descoberta Interface de Rede Windows</name>
+            <description>Template para Descoberta de Interface de Rede de Windows via Zabbix Agent
+
+Modelo de Validacao: Windows Server 2016
+
+Por: Vinicius Goncalves</description>
+            <groups>
+                <group>
+                    <name>Devices/Maquinas Virtuais</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>b8f27ad837734a309b1d19f43c15c488</uuid>
+                    <name>Network - Interfaces WMI Get</name>
+                    <key>wmi.getall[root\cimv2,&quot;select Name,Description,NetConnectionID,Speed,AdapterTypeId,NetConnectionStatus,GUID from win32_networkadapter where PhysicalAdapter=True and NetConnectionStatus&gt;0&quot;]</key>
+                    <history>0</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>1h</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <uuid>ecc7ae56d74e47ac8ce44b345a8eec12</uuid>
+                    <name>Descoberta de Interface de Redes</name>
+                    <type>DEPENDENT</type>
+                    <key>net.if.discovery</key>
+                    <delay>0</delay>
+                    <filter>
+                        <evaltype>AND</evaltype>
+                        <conditions>
+                            <condition>
+                                <macro>{#IFNAME}</macro>
+                                <value>{$NET.IF.IFNAME.MATCHES}</value>
+                                <formulaid>E</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFNAME}</macro>
+                                <value>{$NET.IF.IFNAME.NOT_MATCHES}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>F</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFDESCR}</macro>
+                                <value>{$NET.IF.IFDESCR.MATCHES}</value>
+                                <formulaid>C</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFDESCR}</macro>
+                                <value>{$NET.IF.IFDESCR.NOT_MATCHES}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>D</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFALIAS}</macro>
+                                <value>{$NET.IF.IFALIAS.MATCHES}</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#IFALIAS}</macro>
+                                <value>{$NET.IF.IFALIAS.NOT_MATCHES}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>B</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>262bf7aaf0ee458bb0b5f99071b58644</uuid>
+                            <name>Network - Interface {#IFALIAS}: Tráfego de Entrada</name>
+                            <key>net.if.in[&quot;{#IFGUID}&quot;]</key>
+                            <history>7d</history>
+                            <units>bps</units>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>320fc01116474b83af247dbce8264c48</uuid>
+                            <name>Network - Interface {#IFALIAS}: Tráfego de Saída</name>
+                            <key>net.if.out[&quot;{#IFGUID}&quot;]</key>
+                            <history>7d</history>
+                            <units>bps</units>
+                            <preprocessing>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <parameters>
+                                        <parameter/>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>8</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>7f88128599d7405b8f63cedd4bf7e638</uuid>
+                            <name>Network - Interface {#IFALIAS}: Speed</name>
+                            <type>DEPENDENT</type>
+                            <key>net.if.speed[&quot;{#IFGUID}&quot;]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <units>bps</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$[?(@.GUID == &quot;{#IFGUID}&quot;)].Speed.first()</parameter>
+                                    </parameters>
+                                    <error_handler>CUSTOM_VALUE</error_handler>
+                                    <error_handler_params>0</error_handler_params>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>return (value=='9223372036854775807' ? 0 : value)</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1h</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>wmi.getall[root\cimv2,&quot;select Name,Description,NetConnectionID,Speed,AdapterTypeId,NetConnectionStatus,GUID from win32_networkadapter where PhysicalAdapter=True and NetConnectionStatus&gt;0&quot;]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>bd38620528204725be7b420fa38abf93</uuid>
+                            <name>Network - Interface {#IFALIAS}: Status Operacional</name>
+                            <type>DEPENDENT</type>
+                            <key>net.if.status[&quot;{#IFGUID}&quot;]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>NETWORK::ConnectionStatus</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$[?(@.GUID == &quot;{#IFGUID}&quot;)].NetConnectionStatus.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <parameters>
+                                        <parameter>1d</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>wmi.getall[root\cimv2,&quot;select Name,Description,NetConnectionID,Speed,AdapterTypeId,NetConnectionStatus,GUID from win32_networkadapter where PhysicalAdapter=True and NetConnectionStatus&gt;0&quot;]</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>e56d42e405bc49ce973af82704d20d52</uuid>
+                                    <expression>{$IFCONTROL}=1 and last(/Template - Descoberta Interface de Rede Windows/net.if.status[&quot;{#IFGUID}&quot;])&lt;&gt;2 and (last(/Template - Descoberta Interface de Rede Windows/net.if.status[&quot;{#IFGUID}&quot;],#1)&lt;&gt;last(/Template - Descoberta Interface de Rede Windows/net.if.status[&quot;{#IFGUID}&quot;],#2))</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>last(/Template - Descoberta Interface de Rede Windows/net.if.status[&quot;{#IFGUID}&quot;])=2 or {$IFCONTROL}=0</recovery_expression>
+                                    <name>Interface {#IFNAME}({#IFALIAS}): Link Down</name>
+                                    <opdata>Current state: {ITEM.LASTVALUE1}</opdata>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <uuid>f104e10d352347d6b920eb29a4d9090a</uuid>
+                            <expression>(avg(/Template - Descoberta Interface de Rede Windows/net.if.in[&quot;{#IFGUID}&quot;],15m)&gt;({$IF.UTIL.MAX}/100)*last(/Template - Descoberta Interface de Rede Windows/net.if.speed[&quot;{#IFGUID}&quot;]) or
+avg(/Template - Descoberta Interface de Rede Windows/net.if.out[&quot;{#IFGUID}&quot;],15m)&gt;({$IF.UTIL.MAX}/100)*last(/Template - Descoberta Interface de Rede Windows/net.if.speed[&quot;{#IFGUID}&quot;])) and
+last(/Template - Descoberta Interface de Rede Windows/net.if.speed[&quot;{#IFGUID}&quot;])&gt;0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>avg(/Template - Descoberta Interface de Rede Windows/net.if.in[&quot;{#IFGUID}&quot;],15m)&lt;(({$IF.UTIL.MAX}-3)/100)*last(/Template - Descoberta Interface de Rede Windows/net.if.speed[&quot;{#IFGUID}&quot;]) and
+avg(/Template - Descoberta Interface de Rede Windows/net.if.out[&quot;{#IFGUID}&quot;],15m)&lt;(({$IF.UTIL.MAX}-3)/100)*last(/Template - Descoberta Interface de Rede Windows/net.if.speed[&quot;{#IFGUID}&quot;])</recovery_expression>
+                            <name>Interface {#IFNAME}({#IFALIAS}): Alta utilizado de banda (&gt;{$IF.UTIL.MAX}%)</name>
+                            <opdata>In: {ITEM.LASTVALUE1}, out: {ITEM.LASTVALUE3}, speed: {ITEM.LASTVALUE2}</opdata>
+                            <priority>WARNING</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>Interface {#IFNAME}({#IFALIAS}): Link Down</name>
+                                    <expression>{$IFCONTROL}=1 and last(/Template - Descoberta Interface de Rede Windows/net.if.status[&quot;{#IFGUID}&quot;])&lt;&gt;2 and (last(/Template - Descoberta Interface de Rede Windows/net.if.status[&quot;{#IFGUID}&quot;],#1)&lt;&gt;last(/Template - Descoberta Interface de Rede Windows/net.if.status[&quot;{#IFGUID}&quot;],#2))</expression>
+                                    <recovery_expression>last(/Template - Descoberta Interface de Rede Windows/net.if.status[&quot;{#IFGUID}&quot;])=2 or {$IFCONTROL}=0</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>27543d7803c84e8198c5ecf4619b07d0</uuid>
+                            <name>Network - Interface {#IFALIAS}: Tráfego de Rede</name>
+                            <graph_items>
+                                <graph_item>
+                                    <color>1A7C11</color>
+                                    <item>
+                                        <host>Template - Descoberta Interface de Rede Windows</host>
+                                        <key>net.if.in[&quot;{#IFGUID}&quot;]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>2774A4</color>
+                                    <item>
+                                        <host>Template - Descoberta Interface de Rede Windows</host>
+                                        <key>net.if.out[&quot;{#IFGUID}&quot;]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                    <master_item>
+                        <key>wmi.getall[root\cimv2,&quot;select Name,Description,NetConnectionID,Speed,AdapterTypeId,NetConnectionStatus,GUID from win32_networkadapter where PhysicalAdapter=True and NetConnectionStatus&gt;0&quot;]</key>
+                    </master_item>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>output = JSON.parse(value).map(function(net){
+    return {
+        &quot;{#IFNAME}&quot;: net.Name,
+        &quot;{#IFDESCR}&quot;: net.Description,
+        &quot;{#IFALIAS}&quot;: net.NetConnectionID,
+        &quot;{#IFGUID}&quot;: net.GUID
+    }})
+return JSON.stringify({&quot;data&quot;: output})</parameter>
+                            </parameters>
+                        </step>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>1h</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+            </discovery_rules>
+            <tags>
+                <tag>
+                    <tag>Tag</tag>
+                    <value>Windows</value>
+                </tag>
+            </tags>
+            <macros>
+                <macro>
+                    <macro>{$IF.UTIL.MAX}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$IFCONTROL}</macro>
+                    <value>1</value>
+                </macro>
+            </macros>
+            <dashboards>
+                <dashboard>
+                    <uuid>823cd6799f984b3ea653c73ca8845bf5</uuid>
+                    <name>Network interfaces</name>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
+                                    <type>GRAPH_PROTOTYPE</type>
+                                    <width>24</width>
+                                    <height>5</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>source_type</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Network - Interface {#IFALIAS}: Tráfego de Rede</name>
+                                                <host>Template - Descoberta Interface de Rede Windows</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
+                </dashboard>
+            </dashboards>
+            <valuemaps>
+                <valuemap>
+                    <uuid>63759db9581849ff9147a208d377d8db</uuid>
+                    <name>NETWORK::ConnectionStatus</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>Disconnected</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Connecting</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Connected</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Disconnecting</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Hardware Not Present</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>Hardware Disabled</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>Hardware Malfunction</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>Media Disconnected</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>Authenticating</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>Authentication Succeeded</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>10</value>
+                            <newvalue>Authentication Failed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>11</value>
+                            <newvalue>Invalid Address</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>12</value>
+                            <newvalue>Credentials Required</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+            </valuemaps>
+        </template>
+        <template>
+            <uuid>3feb2ede210442b39fc9639b1ef59bb4</uuid>
+            <template>Template - OS Windows</template>
+            <name>Template - OS Windows</name>
+            <description>Template para Sistemas Operacionais Windows via Zabbix Agent
+
+Modelo de Validacao: Windows Server 2016
+
+Por: Vinicius Goncalves</description>
+            <templates>
+                <template>
+                    <name>Template - Descoberta de Disco</name>
+                </template>
+                <template>
+                    <name>Template - Descoberta Interface de Rede Windows</name>
+                </template>
+            </templates>
+            <groups>
+                <group>
+                    <name>Devices</name>
+                </group>
+                <group>
+                    <name>Devices/Maquinas Virtuais</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>d79e408d34b746be9bd274e29c25d014</uuid>
+                    <name>System - Hostname</name>
+                    <key>agent.hostname</key>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                </item>
+                <item>
+                    <uuid>ec9a3842826b4721bb1f5ad87be87daf</uuid>
+                    <name>System - Versão do Zabbix Agent</name>
+                    <key>agent.version</key>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                            <parameters>
+                                <parameter>1d</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Zabbix Agent</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>68317f2c8be24b9e987fb104694b34bf</uuid>
+                    <name>Ping - Acessibilidade do Host</name>
+                    <type>SIMPLE</type>
+                    <key>icmpping</key>
+                    <history>7d</history>
+                </item>
+                <item>
+                    <uuid>10d241758df44b16a773197b28a86598</uuid>
+                    <name>Ping - Perda de Pacotes (%)</name>
+                    <type>SIMPLE</type>
+                    <key>icmppingloss</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                </item>
+                <item>
+                    <uuid>087a20d469ac49788d8f206adb888de1</uuid>
+                    <name>Ping - Latência</name>
+                    <type>SIMPLE</type>
+                    <key>icmppingsec</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                </item>
+                <item>
+                    <uuid>3a6b5337533b402a81f6be5b11baa6d4</uuid>
+                    <name>CPU - Carga do Processador (%)</name>
+                    <key>system.cpu.load[percpu,avg1]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                </item>
+                <item>
+                    <uuid>ed17165fe4934dd395c169e5871af2ec</uuid>
+                    <name>CPU - Número de CPUs</name>
+                    <key>system.cpu.num[online]</key>
+                    <history>7d</history>
+                </item>
+                <item>
+                    <uuid>d4b578c8f01642879127141bef24e9b1</uuid>
+                    <name>CPU - Utilização do Processador (%)</name>
+                    <key>system.cpu.util[all,system,avg1]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <triggers>
+                        <trigger>
+                            <uuid>36d506f8dedc4132bfe986c76500e39f</uuid>
+                            <expression>last(/Template - OS Windows/system.cpu.util[all,system,avg1])&gt;{$CPU_CRIT_UTIL}</expression>
+                            <name>Alta Utilização da CPU (&gt;{$CPU_CRIT_UTIL}%)</name>
+                            <opdata>Valor Atual: {ITEM.LASTVALUE1}</opdata>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                        <trigger>
+                            <uuid>8fcf89e49e4249fab50d6de6e39d00a9</uuid>
+                            <expression>last(/Template - OS Windows/system.cpu.util[all,system,avg1])&gt;{$CPU_WARN_UTIL}</expression>
+                            <name>Alta Utilização da CPU (&gt;{$CPU_WARN_UTIL}%)</name>
+                            <opdata>Valor Atual: {ITEM.LASTVALUE1}</opdata>
+                            <priority>WARNING</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>Alta Utilização da CPU (&gt;{$CPU_CRIT_UTIL}%)</name>
+                                    <expression>last(/Template - OS Windows/system.cpu.util[all,system,avg1])&gt;{$CPU_CRIT_UTIL}</expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>6aa5623c2320479f83e1e6ab17c8af2c</uuid>
+                    <name>System - UpTime</name>
+                    <key>system.uptime</key>
+                    <history>7d</history>
+                    <units>uptime</units>
+                </item>
+                <item>
+                    <uuid>f1c50bd9e8fd4a46af49ab59ef22cc1e</uuid>
+                    <name>RAM - Memória Disponível (%)</name>
+                    <key>vm.memory.size[pavailable]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                </item>
+                <item>
+                    <uuid>4a495c77613e411b8f0d8c71ea19edee</uuid>
+                    <name>RAM - Memória Total</name>
+                    <key>vm.memory.size[total]</key>
+                    <history>7d</history>
+                    <units>B</units>
+                </item>
+                <item>
+                    <uuid>f8caef492d8845659b582887d203445d</uuid>
+                    <name>RAM - Memória Utilizada</name>
+                    <key>vm.memory.size[used]</key>
+                    <history>7d</history>
+                    <units>B</units>
+                </item>
+            </items>
+            <tags>
+                <tag>
+                    <tag>Tag</tag>
+                    <value>Windows</value>
+                </tag>
+            </tags>
+            <macros>
+                <macro>
+                    <macro>{$CPU_CRIT_UTIL}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$CPU_WARN_UTIL}</macro>
+                    <value>80</value>
+                </macro>
+                <macro>
+                    <macro>{$MEMORY_CRIT_UTIL}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$MEMORY_WARN_UTIL}</macro>
+                    <value>80</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+    <triggers>
+        <trigger>
+            <uuid>c2cbf13a5bfc4bc9a507dbf74745f69a</uuid>
+            <expression>(100*last(/Template - OS Windows/vm.memory.size[used])/last(/Template - OS Windows/vm.memory.size[total]))&gt;{$MEMORY_CRIT_UTIL}</expression>
+            <name>Alta Utilização de Memória (&gt;{$MEMORY_CRIT_UTIL}%)</name>
+            <opdata>Valor Atual: {ITEM.LASTVALUE1}</opdata>
+            <priority>AVERAGE</priority>
+        </trigger>
+        <trigger>
+            <uuid>5e64488818a045dab021ca744f0a2daa</uuid>
+            <expression>(100*last(/Template - OS Windows/vm.memory.size[used])/last(/Template - OS Windows/vm.memory.size[total]))&gt;{$MEMORY_WARN_UTIL}</expression>
+            <name>Alta Utilização de Memória (&gt;{$MEMORY_WARN_UTIL}%)</name>
+            <opdata>Valor Atual: {ITEM.LASTVALUE1}</opdata>
+            <priority>WARNING</priority>
+            <dependencies>
+                <dependency>
+                    <name>Alta Utilização de Memória (&gt;{$MEMORY_CRIT_UTIL}%)</name>
+                    <expression>(100*last(/Template - OS Windows/vm.memory.size[used])/last(/Template - OS Windows/vm.memory.size[total]))&gt;{$MEMORY_CRIT_UTIL}</expression>
+                </dependency>
+            </dependencies>
+        </trigger>
+    </triggers>
+</zabbix_export>
